@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    /* If you're using React: */
+    "jsx": "react-jsx",
+    /* If your code doesn't run in the DOM: */
+    "lib": ["es2022"],
+    "moduleDetection": "force",
+    "module": "CommonJS",
+    /* If NOT transpiling with TypeScript: */
+    "moduleResolution": "Bundler",
+    /* Aliases */
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "resolveJsonModule": true,
+    "typeRoots": ["node_modules/@types"],
+    "allowJs": true,
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    /* Base Options: */
+    "esModuleInterop": true,
+    "skipLibCheck": true
+
+  }
+
+}
