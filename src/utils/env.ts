@@ -23,6 +23,11 @@ const configSchema = z.object({
   AWS_REGION: z.string(),
   JWT_SECRET: z.string(),
   ARGON_2_SALT: z.string(),
+  ALI_ACC_ID: z.string(),
+  ALI_ACC_SECRET: z.string(),
+  ALI_OSS_ACS_RAM: z.string(),
+  ALI_OSS_BUCKET: z.string(),
+  ALI_OSS_REGION: z.string()
 });
 
 try {

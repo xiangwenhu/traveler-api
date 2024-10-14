@@ -8,10 +8,14 @@ import { logger } from './utils/logger';
 import './utils/env';
 import routes from './routes/routes';
 import { errorHandler, handle404Error } from './utils/errors';
+import path from 'node:path';
 
 const { PORT } = process.env;
 
 const app = express();
+
+
+app.use(express.static(path.join(__dirname, "../static")));
 
 app.use(express.json());
 app.use(cors());
