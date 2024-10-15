@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 
-const pagerSchame = z.object({
+export const pagerSchame = z.object({
     pageNum: z.number().min(1),
     pageSize: z.number().min(10).max(100)
 })

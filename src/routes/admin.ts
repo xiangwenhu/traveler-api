@@ -1,7 +1,7 @@
 import type { Router } from 'express';
 import {
-  handleGetAllUsers,
-} from '@/controllers/admin-controllers';
+  getItemsHandler,
+} from '@/controllers/admin';
 import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
 
@@ -12,5 +12,5 @@ export default createRouter((router: Router) => {
     }),
   );
 
-  router.get('/all-users', handleGetAllUsers);
+  router.get('/getItems', getItemsHandler);
 });

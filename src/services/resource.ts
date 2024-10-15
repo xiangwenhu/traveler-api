@@ -1,5 +1,5 @@
 import { PagerParamsType } from '@/schema/common';
-import { NewResource, resources, UpdateResource } from '@/schema/resource';
+import { NewItemType, resources, UpdataItemType } from '@/schema/resource';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
 import { eq } from 'drizzle-orm';
@@ -19,7 +19,7 @@ export async function getByTraverlId(options: {
         .limit(pageSize);
 }
 
-export async function updateResource(item: UpdateResource) {
+export async function updateItem(item: UpdataItemType) {
     const [updatedUser] = await db
         .update(resources)
         .set(item)
@@ -34,7 +34,7 @@ export async function updateResource(item: UpdateResource) {
 }
 
 
-export async function addResource(item: NewResource) {
+export async function addItem(item: NewItemType) {
     const [newItem] = await db
         .insert(resources)
         .values(item)
@@ -48,7 +48,18 @@ export async function addResource(item: NewResource) {
 }
 
 
-export async function deleteResource(id: number) {
+export async function deleteItem(id: number) {
     const [deletedItem] = await db.delete(resources).where(eq(resources.id, id));
     return deletedItem;
+}
+
+export async function getItems(options: PagerParamsType) {
+    const { pageNum, pageSize } = options;
+    const offset = (pageNum - 1) * pageSize;
+
+    return await db
+        .select()
+        .from(resources)
+        .offset(offset)
+        .limit(pageSize);
 }

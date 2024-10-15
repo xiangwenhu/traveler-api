@@ -1,11 +1,11 @@
 import { PagerParamsType } from '@/schema/common';
-import { NewTravel, travels, UpdateTravel } from '@/schema/travel';
+import { NewItemType, travels, UpdateItemType } from '@/schema/travel';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
 import { eq } from 'drizzle-orm';
 
 
-export async function getByTraverls(options: PagerParamsType) {
+export async function getItems(options: PagerParamsType) {
     const { pageNum, pageSize } = options;
     const offset = (pageNum - 1) * pageSize;
 
@@ -16,7 +16,7 @@ export async function getByTraverls(options: PagerParamsType) {
         .limit(pageSize);
 }
 
-export async function updateTravel(item: UpdateTravel) {
+export async function updateItem(item: UpdateItemType) {
     const [updatedUser] = await db
         .update(travels)
         .set(item)
@@ -31,7 +31,7 @@ export async function updateTravel(item: UpdateTravel) {
 }
 
 
-export async function addTravel(item: NewTravel) {
+export async function addItem(item: NewItemType) {
     const [newItem] = await db
         .insert(travels)
         .values(item)
@@ -45,7 +45,7 @@ export async function addTravel(item: NewTravel) {
 }
 
 
-export async function deleteTravel(id: number) {
+export async function deleteItem(id: number) {
     const [deletedItem] = await db.delete(travels).where(eq(travels.id, id));
     return deletedItem;
 }

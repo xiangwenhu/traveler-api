@@ -1,11 +1,11 @@
-import { Buffer } from 'node:buffer';
-import process from 'node:process';
+import { buildWhereClause } from '@/utils/sql';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
-import { type NewUser, type UpdateUser, type User, users } from '../schema/user';
+import { Buffer } from 'node:buffer';
+import process from 'node:process';
+import { type NewItemType, SelectItemsType, type UpdateItemType, users } from '../schema/user';
 import { db } from '../utils/db';
 import { BackendError } from '../utils/errors';
-import type { PagerParams } from '../types/service';
 
 export async function getUserByUserId(userId: number) {
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -17,7 +17,7 @@ export async function getUserByAccount(account: string) {
   return user;
 }
 
-export async function addUser(user: NewUser) {
+export async function addItem(user: NewItemType) {
   const { password } = user;
   const hashedPassword = await argon2.hash(password, {
     salt: Buffer.from(process.env.ARGON_2_SALT as string),
@@ -51,7 +51,7 @@ export async function verifyUser(_email: string) {
   return true;
 }
 
-export async function deleteUser(id: number) {
+export async function deleteItem(id: number) {
   const user = await getUserByUserId(id);
 
   if (!user)
@@ -61,8 +61,8 @@ export async function deleteUser(id: number) {
   return deletedUser;
 }
 
-export async function updateUser({ name, email, password, status, id }: UpdateUser) {
-  const upUser: UpdateUser = {
+export async function updateItem({ name, email, password, status, id }: UpdateItemType) {
+  const upUser: UpdateItemType = {
     name,
     email,
     status,
@@ -87,9 +87,18 @@ export async function updateUser({ name, email, password, status, id }: UpdateUs
   return updatedUser;
 }
 
-export async function getUsers(pager: PagerParams) {
-  const offset = (pager.pageNum - 1) * pager.pageSize;
 
-  const usersList = await db.select({}).from(users).offset(offset).limit(pager.pageSize); ;
+export async function getItems(query: SelectItemsType) {
+  const { pageNum, pageSize, ...conditions} = query;
+  const offset = (pageNum! - 1) * pageSize!;
+
+  const whereCon = buildWhereClause(conditions, users);
+
+  const usersList = await db.select()
+  .from(users)
+  .where(whereCon)
+  .offset(offset)
+  .limit(pageSize!);
   return usersList;
 }
+

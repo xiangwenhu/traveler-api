@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { boolean, int, mysqlTable, text, timestamp, varchar, mysqlEnum } from 'drizzle-orm/mysql-core';
+import { int, mysqlEnum, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -17,17 +17,17 @@ export const resources = mysqlTable('resources', {
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
 });
 
-export const selectResourceSchema = createSelectSchema(resources);
+export const selectSchema = createSelectSchema(resources);
 
 // 删除
-export const deleteResourceSchema = z.object({
-    body: selectResourceSchema.pick({
+export const deleteSchema = z.object({
+    body: selectSchema.pick({
         id: true,
     }),
 });
 
-export const updateResourceSchema = z.object({
-    body: selectResourceSchema
+export const updateSchema = z.object({
+    body: selectSchema
         .pick({
             id: true,
             travelId: true,
@@ -41,8 +41,8 @@ export const updateResourceSchema = z.object({
         .partial(),
 });
 
-export const newResourceSchema = z.object({
-    body: selectResourceSchema.pick({
+export const newSchema = z.object({
+    body: selectSchema.pick({
         travelId: true,
         type: true,
         url: true,
@@ -54,6 +54,6 @@ export const newResourceSchema = z.object({
     }),
 });
 
-export type Resource = InferSelectModel<typeof resources>;
-export type NewResource = z.infer<typeof newResourceSchema>['body'];
-export type UpdateResource = z.infer<typeof updateResourceSchema>['body'];
+export type ItemType = InferSelectModel<typeof resources>;
+export type NewItemType = z.infer<typeof newSchema>['body'];
+export type UpdataItemType = z.infer<typeof updateSchema>['body'];

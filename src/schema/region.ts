@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { boolean, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
+import { int, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -14,9 +14,9 @@ export const regions = mysqlTable('regions', {
 
 export type Region = InferSelectModel<typeof regions>;
 
-export const schema = createSelectSchema(regions);
+const schema = createSelectSchema(regions);
 
-export const SelectRegionSchema = z.object({
+export const selectSchema = z.object({
   body: schema.pick({
     parentCode: true,
   }),
@@ -30,4 +30,4 @@ export const newSchema = z.object({
   }),
 });
 
-export type NewRegion = z.infer<typeof newSchema>['body'];
+export type NewItemType = z.infer<typeof newSchema>['body'];

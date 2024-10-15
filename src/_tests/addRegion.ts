@@ -1,7 +1,7 @@
 import '../utils/env';
 import path from 'node:path';
-import type { NewRegion, Region } from '@/schema/region';
-import { addRegion } from '@/services/region-service';
+import type { NewItemType, Region } from '@/schema/region';
+import { addItem } from '@/services/region';
 
 export interface AreaItem {
   code: number;
@@ -10,13 +10,13 @@ export interface AreaItem {
 }
 
 async function adRegion(area: AreaItem, parentCode: number | undefined) {
-  const region: NewRegion = {
+  const region: NewItemType = {
     parentCode: parentCode || 0,
     name: area.name,
     code: area.code,
   };
 
-  await addRegion(region);
+  await addItem(region);
   console.log('add:', region.code, region.name);
 
   if (Array.isArray(area.children)) {

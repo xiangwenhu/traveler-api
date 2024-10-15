@@ -2,6 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import { boolean, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import { pagerSchame } from './common';
 
 export const users = mysqlTable('users', {
   id: int('id').primaryKey().autoincrement(),
@@ -15,32 +16,40 @@ export const users = mysqlTable('users', {
   isAdmin: boolean('is_admin').notNull().default(false),
 });
 
-export const selectUserSchema = createSelectSchema(users, {
+
+const schema = createSelectSchema(users, {
   email: schema =>
     schema.email.email().regex(/^([\w.%-]+@[a-z0-9.-]+\.[a-z]{2,6})*$/i),
 });
 
+export const selectSchema = z.object({
+  query: schema.pick({
+    account: true,
+    name: true
+  }).merge(pagerSchame).partial(),
+});
+
 export const verifyUserSchema = z.object({
-  query: selectUserSchema.pick({
+  query: schema.pick({
     id: true,
   }),
 });
 
-export const deleteUserSchema = z.object({
-  body: selectUserSchema.pick({
+export const deleteSchema = z.object({
+  body: schema.pick({
     id: true,
   }),
 });
 
 export const loginSchema = z.object({
-  body: selectUserSchema.pick({
+  body: schema.pick({
     account: true,
     password: true,
   }),
 });
 
-export const updateUserSchema = z.object({
-  body: selectUserSchema
+export const updateSchema = z.object({
+  body: schema
     .pick({
       id: true,
       name: true,
@@ -52,8 +61,8 @@ export const updateUserSchema = z.object({
     .partial(),
 });
 
-export const newUserSchema = z.object({
-  body: selectUserSchema.pick({
+export const newSchema = z.object({
+  body: schema.pick({
     account: true,
     name: true,
     email: true,
@@ -63,6 +72,7 @@ export const newUserSchema = z.object({
   }),
 });
 
-export type User = InferSelectModel<typeof users>;
-export type NewUser = z.infer<typeof newUserSchema>['body'];
-export type UpdateUser = z.infer<typeof updateUserSchema>['body'];
+export type ItemType = InferSelectModel<typeof users>;
+export type NewItemType = z.infer<typeof newSchema>['body'];
+export type UpdateItemType = z.infer<typeof updateSchema>['body'];
+export type SelectItemsType = z.infer<typeof selectSchema>['query'];

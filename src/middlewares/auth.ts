@@ -1,4 +1,4 @@
-import { getUserByAccount, getUserByUserId } from '@/services/user-services';
+import { getUserByAccount, getUserByUserId } from '@/services/user';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import { verifyToken } from '@/utils/jwt';

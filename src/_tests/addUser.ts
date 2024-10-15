@@ -1,8 +1,8 @@
 import '../utils/env';
-import * as userS from '../services/user-services';
+import * as userS from '../services/user';
 
 ; (async function () {
-  await userS.addUser({
+  await userS.addItem({
     account: 'admin',
     password: 'admin',
     status: true,

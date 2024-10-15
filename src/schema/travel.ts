@@ -20,17 +20,17 @@ export const travels = mysqlTable('travels', {
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
 });
 
-export const selectTravelSchema = createSelectSchema(travels);
+export const selectSchema = createSelectSchema(travels);
 
 // 删除
-export const deleteTravelSchema = z.object({
-    body: selectTravelSchema.pick({
+export const deleteSchema = z.object({
+    body: selectSchema.pick({
         id: true,
     }),
 });
 
-export const updateTravelSchema = z.object({
-    body: selectTravelSchema
+export const updateSchema = z.object({
+    body: selectSchema
         .pick({
             id: true,
             title: true,
@@ -47,8 +47,8 @@ export const updateTravelSchema = z.object({
         .partial()
 });
 
-export const newTravelSchema = z.object({
-    body: selectTravelSchema.pick({
+export const newSchema = z.object({
+    body: selectSchema.pick({
         title: true,
         description: true,
         cover: true,
@@ -62,24 +62,12 @@ export const newTravelSchema = z.object({
     }),
 });
 
-export const addTravelResourceSchema = z.object({
-    body: selectTravelSchema
-        .merge(z.object({
-            resources: z.array(z.number())
-        }))
-        .pick({
-            id: true,
-            resources: true
-        })
-        .partial()
-});
-
 
 export const tralvelRelations = relations(travels, ({ one, many }) => ({
     resources: many(resources),
 }));
 
 
-export type Travel = InferSelectModel<typeof travels>;
-export type NewTravel = z.infer<typeof newTravelSchema>['body'];
-export type UpdateTravel = z.infer<typeof updateTravelSchema>['body'];
+export type ItemType = InferSelectModel<typeof travels>;
+export type NewItemType = z.infer<typeof newSchema>['body'];
+export type UpdateItemType = z.infer<typeof updateSchema>['body'];
