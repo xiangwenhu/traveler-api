@@ -83,11 +83,10 @@ export const handleGetUsers = createHandler(async (req, res) => {
 });
 
 export const handleUpdateUser = createHandler(updateUserSchema, async (req, res) => {
-  const { user } = res.locals as { user: User };
 
-  const { name, password, email } = req.body;
+  const user = req.body;
 
-  const updatedUser = await updateUser(user, { name, password, email });
+  const updatedUser = await updateUser(user);
 
   res.status(200).json({
     user: updatedUser,

@@ -61,7 +61,7 @@ export async function deleteUser(id: number) {
   return deletedUser;
 }
 
-export async function updateUser(user: User, { name, email, password, status }: UpdateUser) {
+export async function updateUser({ name, email, password, status, id }: UpdateUser) {
   const upUser: UpdateUser = {
     name,
     email,
@@ -77,7 +77,7 @@ export async function updateUser(user: User, { name, email, password, status }: 
   const [updatedUser] = await db
     .update(users)
     .set(upUser)
-    .where(eq(users.id, user.id));
+    .where(eq(users.id, id!));
   if (!updatedUser) {
     throw new BackendError('USER_NOT_FOUND', {
       message: 'User could not be updated',

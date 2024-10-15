@@ -12,7 +12,7 @@ export async function addRegion(item: NewRegion) {
 
   if (!newItem) {
     throw new BackendError('INTERNAL_ERROR', {
-      message: 'Failed to add user',
+      message: 'Failed to add region',
     });
   }
   return newItem.insertId;

@@ -80,7 +80,6 @@ export const tralvelRelations = relations(travels, ({ one, many }) => ({
 }));
 
 
-export type Resource = InferSelectModel<typeof travels>;
-export type NewResource = z.infer<typeof newTravelSchema>['body'];
-export type UpdateResource = z.infer<typeof updateTravelSchema>['body'];
-export type AddTravelResource = z.infer<typeof addTravelResourceSchema>['body'];
+export type Travel = InferSelectModel<typeof travels>;
+export type NewTravel = z.infer<typeof newTravelSchema>['body'];
+export type UpdateTravel = z.infer<typeof updateTravelSchema>['body'];
