@@ -11,10 +11,10 @@ import { createHandler } from '@/utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const user = req.body;
-
   await addItem(user);
-
-  res.status(201).json(user);
+  res.status(201).json({
+    code: 0,
+  });
 });
 
 
@@ -24,25 +24,30 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const deletedUser = await deleteItem(id);
 
   res.status(200).json({
-    user: deletedUser,
+    code: 0,
+    data: deletedUser,
   });
 });
 
 export const getItemsHandler = createHandler(selectSchema,  async (req, res) => {
   const selectOptions = req.query as SelectItemsType;
 
-  const users = await getItems(selectOptions);
+  const data = await getItems(selectOptions);
 
-  res.status(200).json(users);
+  res.status(200).json({
+    code: 0,
+    data 
+  });
 });
 
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
 
   const user = req.body;
 
-  const updatedUser = await updateItem(user);
+  const data = await updateItem(user);
 
   res.status(200).json({
-    user: updatedUser,
+    data,
+    code: 0
   });
 });

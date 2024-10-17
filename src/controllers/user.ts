@@ -19,7 +19,7 @@ import {
 } from '@/services/user';
 import type { PagerParams } from '@/types/service';
 import { createHandler } from '@/utils/create';
-import { BackendError } from '@/utils/errors';
+import { BackendError, EnumErrorCode } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
 
 export const loginHandler = createHandler(loginSchema, async (req, res) => {
@@ -28,16 +28,16 @@ export const loginHandler = createHandler(loginSchema, async (req, res) => {
   const user = await getUserByAccount(account);
 
   if (!user)
-    throw new BackendError('USER_NOT_FOUND');
+    throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
 
   const matchPassword = await argon2.verify(user.password, password, {
     salt: Buffer.from(process.env.ARGON_2_SALT as string),
   });
   if (!matchPassword)
-    throw new BackendError('INVALID_PASSWORD');
+    throw new BackendError(EnumErrorCode.INVALID_PASSWORD);
 
   const token = generateToken(user.account);
-  res.status(200).json({ token, account: user.account, name: user.name });
+  res.status(200).json({ code: 0, data: { token, account: user.account, name: user.name } });
 });
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
@@ -46,14 +46,16 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const existingUser = await getUserByAccount(user.account);
 
   if (existingUser) {
-    throw new BackendError('CONFLICT', {
+    throw new BackendError(EnumErrorCode.CONFLICT, {
       message: 'User already exists',
     });
   }
 
   await addItem(user);
 
-  res.status(201).json(user);
+  res.status(201).json({
+    code: 0
+  });
 });
 
 export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
@@ -62,7 +64,7 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const { user } = res.locals as { user: ItemType };
 
   if (user.account === 'admin') {
-    throw new BackendError('UNAUTHORIZED', {
+    throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
       message: 'You are not authorized to delete this user',
     });
   }
@@ -70,7 +72,8 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const deletedUser = await deleteItem(id);
 
   res.status(200).json({
-    user: deletedUser,
+    code: 0,
+    data: deletedUser,
   });
 });
 
@@ -78,9 +81,12 @@ export const getItemsHandler = createHandler(async (req, res) => {
   // @ts-ignore
   const pager = req.query as SelectItemsType;
 
-  const users = await getItems(pager);
+  const data = await getItems(pager);
 
-  res.status(200).json(users);
+  res.status(200).json({
+    code: 0,
+    data
+  });
 });
 
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
@@ -90,6 +96,7 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const updatedUser = await updateItem(user);
 
   res.status(200).json({
-    user: updatedUser,
+    code: 0,
+    data: updatedUser,
   });
 });

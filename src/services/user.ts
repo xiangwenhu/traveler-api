@@ -5,7 +5,7 @@ import { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { type NewItemType, SelectItemsType, type UpdateItemType, users } from '../schema/user';
 import { db } from '../utils/db';
-import { BackendError } from '../utils/errors';
+import { BackendError, EnumErrorCode } from '../utils/errors';
 
 export async function getUserByUserId(userId: number) {
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -31,7 +31,7 @@ export async function addItem(user: NewItemType) {
     });
 
   if (!newUser) {
-    throw new BackendError('INTERNAL_ERROR', {
+    throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
       message: 'Failed to add user',
     });
   }
@@ -55,7 +55,7 @@ export async function deleteItem(id: number) {
   const user = await getUserByUserId(id);
 
   if (!user)
-    throw new BackendError('USER_NOT_FOUND');
+    throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
 
   const [deletedUser] = await db.delete(users).where(eq(users.id, id));
   return deletedUser;
@@ -79,7 +79,7 @@ export async function updateItem({ name, email, password, status, id }: UpdateIt
     .set(upUser)
     .where(eq(users.id, id!));
   if (!updatedUser) {
-    throw new BackendError('USER_NOT_FOUND', {
+    throw new BackendError(EnumErrorCode.USER_NOT_FOUND, {
       message: 'User could not be updated',
     });
   }

@@ -15,7 +15,9 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
 
   await addItem(user);
 
-  res.status(201).json(user);
+  res.status(201).json({
+    code: 0
+  });
 });
 
 
@@ -25,7 +27,8 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const deletedUser = await deleteItem(id);
 
   res.status(200).json({
-    user: deletedUser,
+    data: deletedUser,
+    code: 0
   });
 });
 
@@ -33,9 +36,13 @@ export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   // @ts-ignore
   const pager = req.query as SelectItemsType;
 
-  const users = await getItems(pager);
+  const data = await getItems(pager);
 
-  res.status(200).json(users);
+  res.status(200).json({
+    code: 0,
+    data
+  });
+  
 });
 
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
@@ -45,6 +52,7 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const updatedUser = await updateItem(user);
 
   res.status(200).json({
-    user: updatedUser,
+    data: updatedUser,
+    code: 0
   });
 });

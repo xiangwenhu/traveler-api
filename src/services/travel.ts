@@ -1,7 +1,7 @@
 import { PagerParamsType } from '@/schema/common';
 import { NewItemType, SelectItemsType, travels, UpdateItemType } from '@/schema/travel';
 import { db } from '@/utils/db';
-import { BackendError } from '@/utils/errors';
+import { BackendError, EnumErrorCode } from '@/utils/errors';
 import { buildWhereClause } from '@/utils/sql';
 import { count, eq } from 'drizzle-orm';
 
@@ -13,14 +13,14 @@ export async function getItems(options: SelectItemsType) {
 
     const totalArr = await db.select({ count: count() }).from(travels).where(whereCon);
 
-    const items =  await db
+    const items = await db
         .select()
         .from(travels)
         .offset(offset)
         .limit(+pageSize);
 
     return {
-        data: items,
+        list: items,
         total: totalArr[0]?.count || 0
     }
 }
@@ -31,7 +31,7 @@ export async function updateItem(item: UpdateItemType) {
         .set(item)
         .where(eq(travels.id, item.id!));
     if (!updatedUser) {
-        throw new BackendError('NOT_FOUND', {
+        throw new BackendError(EnumErrorCode.NOT_FOUND, {
             message: 'Travel could not be updated',
         });
     }
@@ -46,7 +46,7 @@ export async function addItem(item: NewItemType) {
         .values(item)
 
     if (!newItem) {
-        throw new BackendError('INTERNAL_ERROR', {
+        throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
             message: 'Failed to add travel',
         });
     }

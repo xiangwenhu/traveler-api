@@ -1,7 +1,7 @@
 import { type NewItemType, regions } from '@/schema/region';
 import { eq } from 'drizzle-orm';
 import { db } from '../utils/db';
-import { BackendError } from '../utils/errors';
+import { BackendError, EnumErrorCode } from '../utils/errors';
 
 export async function addItem(item: NewItemType) {
   const [newItem] = await db
@@ -11,7 +11,7 @@ export async function addItem(item: NewItemType) {
     });
 
   if (!newItem) {
-    throw new BackendError('INTERNAL_ERROR', {
+    throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
       message: 'Failed to add region',
     });
   }

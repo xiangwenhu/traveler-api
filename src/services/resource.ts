@@ -1,7 +1,7 @@
 import { PagerParamsType } from '@/schema/common';
 import { NewItemType, resources, SelectItemsType, UpdataItemType } from '@/schema/resource';
 import { db } from '@/utils/db';
-import { BackendError } from '@/utils/errors';
+import { BackendError, EnumErrorCode } from '@/utils/errors';
 import { buildWhereClause } from '@/utils/sql';
 import { count, eq } from 'drizzle-orm';
 
@@ -26,7 +26,7 @@ export async function updateItem(item: UpdataItemType) {
         .set(item)
         .where(eq(resources.id, item.id!));
     if (!updatedUser) {
-        throw new BackendError('NOT_FOUND', {
+        throw new BackendError(EnumErrorCode.NOT_FOUND, {
             message: 'Resource could not be updated',
         });
     }
@@ -41,7 +41,7 @@ export async function addItem(item: NewItemType) {
         .values(item)
 
     if (!newItem) {
-        throw new BackendError('INTERNAL_ERROR', {
+        throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
             message: 'Failed to add resource',
         });
     }
@@ -69,7 +69,7 @@ export async function getItems(options: SelectItemsType) {
         .limit(+pageSize);
 
     return {
-        data: items,
+        list: items,
         total: totalArr[0]?.count || 0
     }
 }

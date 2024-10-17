@@ -22,7 +22,7 @@ export async function getItems() {
     .from(users);
 
   return {
-    data: items,
+    list: items,
     total: totalArr[0]?.count || 0
   }
 }

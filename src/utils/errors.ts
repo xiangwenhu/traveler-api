@@ -23,68 +23,93 @@ type HttpErrorCode =
 type BackendErrorCode = 'VALIDATION_ERROR' | 'USER_NOT_FOUND' | 'INVALID_PASSWORD';
 
 type ErrorCode = HttpErrorCode | BackendErrorCode | 'INTERNAL_ERROR';
+type ErrorCodeNumber = number;
+
+
+export enum EnumErrorCode {
+  BAD_REQUEST = 40000,
+  UNAUTHORIZED = 40001,
+  INVALID_PASSWORD = 40001,
+  NOT_FOUND = 40004,
+  USER_NOT_FOUND = 40004,
+  METHOD_NOT_ALLOWED = 40005,
+  NOT_ACCEPTABLE = 40006,
+  REQUEST_TIMEOUT = 40008,
+  CONFLICT = 40009,
+  GONE = 40010,
+  cLENGTH_REQUIRED = 40011,
+  PRECONDITION_FAILED = 40012,
+  PAYLOAD_TOO_LARGE = 40013,
+  URI_TOO_LONG = 40014,
+  UNSUPPORTED_MEDIA_TYPE = 40015,
+  RANGE_NOT_SATISFIABLE = 40016,
+  EXPECTATION_FAILED = 40017,
+  TEAPOT = 40018,
+  INTERNAL_ERROR = 99999
+}
+
 
 export function getStatusFromErrorCode(code: ErrorCode): number {
   switch (code) {
     case 'BAD_REQUEST':
     case 'VALIDATION_ERROR':
-      return 400;
+      return 40000;
     case 'UNAUTHORIZED':
     case 'INVALID_PASSWORD':
-      return 401;
+      return 40001;
     case 'NOT_FOUND':
     case 'USER_NOT_FOUND':
-      return 404;
+      return 40004;
     case 'METHOD_NOT_ALLOWED':
-      return 405;
+      return 40005;
     case 'NOT_ACCEPTABLE':
-      return 406;
+      return 40006;
     case 'REQUEST_TIMEOUT':
-      return 408;
+      return 40008;
     case 'CONFLICT':
-      return 409;
+      return 40009;
     case 'GONE':
-      return 410;
+      return 40010;
     case 'LENGTH_REQUIRED':
-      return 411;
+      return 40011;
     case 'PRECONDITION_FAILED':
-      return 412;
+      return 40012;
     case 'PAYLOAD_TOO_LARGE':
-      return 413;
+      return 40013;
     case 'URI_TOO_LONG':
-      return 414;
+      return 40014;
     case 'UNSUPPORTED_MEDIA_TYPE':
-      return 415;
+      return 40015;
     case 'RANGE_NOT_SATISFIABLE':
-      return 416;
+      return 40016;
     case 'EXPECTATION_FAILED':
-      return 417;
+      return 40017;
     case 'TEAPOT':
-      return 418; // I'm a teapot
+      return 40018; // I'm a teapot
     case 'INTERNAL_ERROR':
-      return 500;
+      return 50000;
     default:
-      return 500;
+      return 50000;
   }
 }
 
-export function getMessageFromErrorCode(code: ErrorCode): string {
+export function getMessageFromErrorCode(code: ErrorCodeNumber): string {
   switch (code) {
-    case 'BAD_REQUEST':
+    case 50000:
       return 'The request is invalid.';
-    case 'VALIDATION_ERROR':
+    case 60000:
       return 'The request contains invalid or missing fields.';
-    case 'UNAUTHORIZED':
+    case 40001:
       return 'You are not authorized to access this resource.';
-    case 'NOT_FOUND':
+    case 40004:
       return 'The requested resource was not found.';
-    case 'USER_NOT_FOUND':
+    case 40009:
       return 'The user was not found.';
-    case 'INTERNAL_ERROR':
+    case 99999:
       return 'An internal server error occurred.';
-    case 'CONFLICT':
+    case 80000:
       return 'The request conflicts with the current state of the server.';
-    case 'INVALID_PASSWORD':
+    case 40010:
       return 'The password is incorrect.';
     default:
       return 'An internal server error occurred.';
@@ -112,10 +137,10 @@ export function handleValidationError(err: ZodError): {
 }
 
 export class BackendError extends Error {
-  code: ErrorCode;
+  code: number;
   details?: unknown;
   constructor(
-    code: ErrorCode,
+    code: number,
     {
       message,
       details,
@@ -124,19 +149,19 @@ export class BackendError extends Error {
       details?: unknown;
     } = {},
   ) {
-    super(message ?? getMessageFromErrorCode(code));
+    super(message ?? '内部服务错误');
     this.code = code;
     this.details = details;
   }
 }
 
 export function errorHandler(error: unknown, req: Request, res: Response<{
-  code: ErrorCode;
+  code: number;
   message: string;
   details?: unknown;
 }>, _next: NextFunction) {
-  let statusCode = 500;
-  let code: ErrorCode | undefined;
+  let statusCode = 200;
+  let code: number | undefined;
   let message: string | undefined;
   let details: unknown | undefined;
 
@@ -148,23 +173,23 @@ export function errorHandler(error: unknown, req: Request, res: Response<{
     message = error.message;
     code = error.code;
     details = error.details;
-    statusCode = getStatusFromErrorCode(code);
+    statusCode = 200; // getStatusFromErrorCode(code);
   }
 
   if (error instanceof ZodError) {
-    code = 'VALIDATION_ERROR';
+    code = 5000;
     message = getMessageFromErrorCode(code);
     details = handleValidationError(error);
-    statusCode = getStatusFromErrorCode(code);
+    statusCode = 200;
   }
 
   if ((error as { code: string }).code === 'ECONNREFUSED') {
-    code = 'INTERNAL_ERROR';
+    code = 9000;
     message = 'The DB crashed maybe because they dont like you :p';
     details = error;
   }
 
-  code = code ?? 'INTERNAL_ERROR';
+  code = 9999;
   message = message ?? getMessageFromErrorCode(code);
   details = details ?? error;
 

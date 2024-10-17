@@ -1,6 +1,6 @@
 import { getUserByAccount, getUserByUserId } from '@/services/user';
 import { createHandler } from '@/utils/create';
-import { BackendError } from '@/utils/errors';
+import { BackendError, EnumErrorCode } from '@/utils/errors';
 import { verifyToken } from '@/utils/jwt';
 
 export function authenticate({ verifyAdmin } = {
@@ -10,7 +10,7 @@ export function authenticate({ verifyAdmin } = {
     const { authorization } = req.headers;
 
     if (!authorization) {
-      throw new BackendError('UNAUTHORIZED', {
+      throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
         message: 'Authorization header not found',
       });
     }
@@ -18,7 +18,7 @@ export function authenticate({ verifyAdmin } = {
     const token = authorization.split(' ')[1];
 
     if (!token) {
-      throw new BackendError('UNAUTHORIZED', {
+      throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
         message: 'Token not found',
       });
     }
@@ -28,10 +28,10 @@ export function authenticate({ verifyAdmin } = {
     const user = await getUserByAccount(account);
 
     if (!user)
-      throw new BackendError('USER_NOT_FOUND');
+      throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
 
     if (verifyAdmin && !user.isAdmin) {
-      throw new BackendError('UNAUTHORIZED', {
+      throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
         message: 'User not authorized',
       });
     }

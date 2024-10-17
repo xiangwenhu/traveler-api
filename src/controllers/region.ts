@@ -8,5 +8,8 @@ export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
     const { parentCode } = req.query;
 
     const data = await getItems(+parentCode || 0);
-    res.status(200).json(data);
+    res.status(200).json({
+        data,
+        code: 0
+    });
 });
