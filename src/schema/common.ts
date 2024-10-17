@@ -1,9 +1,14 @@
 import { z } from "zod";
 
+export const zNumberString = z.string().regex(/^\d+$/);
+
+const zNumberString100 = z
+    .string()
+    .regex(/^([1-9][0-9]?|100)$/);
 
 export const pagerSchame = z.object({
-    pageNum: z.number().min(1),
-    pageSize: z.number().min(10).max(100)
+    pageNum: zNumberString.min(1),
+    pageSize: zNumberString100,
 })
 
 export const PagerBodySchema = z.object({
@@ -16,3 +21,5 @@ export const PagerQuerySchame = z.object({
 
 
 export type PagerParamsType = z.infer<typeof pagerSchame>;
+
+

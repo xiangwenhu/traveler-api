@@ -1,22 +1,23 @@
 import { PagerParamsType } from '@/schema/common';
-import { NewItemType, resources, UpdataItemType } from '@/schema/resource';
+import { NewItemType, resources, SelectItemsType, UpdataItemType } from '@/schema/resource';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
-import { eq } from 'drizzle-orm';
+import { buildWhereClause } from '@/utils/sql';
+import { count, eq } from 'drizzle-orm';
 
 
 export async function getByTraverlId(options: {
     travelId: number
 } & PagerParamsType) {
     const { travelId, pageNum, pageSize } = options;
-    const offset = (pageNum - 1) * pageSize;
+    const offset = (+pageNum - 1) * +pageSize;
 
     return await db
         .select()
         .from(resources)
         .where(eq(resources.travelId, travelId))
         .offset(offset)
-        .limit(pageSize);
+        .limit(+pageSize);
 }
 
 export async function updateItem(item: UpdataItemType) {
@@ -53,13 +54,22 @@ export async function deleteItem(id: number) {
     return deletedItem;
 }
 
-export async function getItems(options: PagerParamsType) {
+export async function getItems(options: SelectItemsType) {
     const { pageNum, pageSize } = options;
-    const offset = (pageNum - 1) * pageSize;
+    const offset = (+pageNum - 1) * +pageSize;
 
-    return await db
+    const whereCon = buildWhereClause(options, resources);
+
+    const totalArr = await db.select({ count: count() }).from(resources).where(whereCon);
+
+    const items =  await db
         .select()
         .from(resources)
         .offset(offset)
-        .limit(pageSize);
+        .limit(+pageSize);
+
+    return {
+        data: items,
+        total: totalArr[0]?.count || 0
+    }
 }

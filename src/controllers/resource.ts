@@ -1,12 +1,11 @@
 
-import { deleteSchema, newSchema, updateSchema, selectSchema } from '@/schema/resource';
+import { deleteSchema, newSchema, updateSchema, schema, selectSchema, SelectItemsType } from '@/schema/resource';
 import {
  addItem,
  updateItem,
  deleteItem,
  getItems,
 } from '@/services/resource';
-import type { PagerParams } from '@/types/service';
 import { createHandler } from '@/utils/create';
 
 
@@ -29,11 +28,10 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   });
 });
 
-export const getItemsHandler = createHandler(   async (req, res) => {
-  // @ts-ignore
-  const pager = req.query as PagerParams;
+export const getItemsHandler = createHandler(selectSchema,  async (req, res) => {
+  const selectOptions = req.query as SelectItemsType;
 
-  const users = await getItems(pager);
+  const users = await getItems(selectOptions);
 
   res.status(200).json(users);
 });

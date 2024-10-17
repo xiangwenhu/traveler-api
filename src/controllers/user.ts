@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import consola from 'consola';
 import {
   type ItemType,
+  SelectItemsType,
   deleteSchema,
   loginSchema,
   newSchema,
@@ -75,7 +76,7 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
 
 export const getItemsHandler = createHandler(async (req, res) => {
   // @ts-ignore
-  const pager = req.query as PagerParams;
+  const pager = req.query as SelectItemsType;
 
   const users = await getItems(pager);
 

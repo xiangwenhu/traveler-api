@@ -1,19 +1,28 @@
 import { PagerParamsType } from '@/schema/common';
-import { NewItemType, travels, UpdateItemType } from '@/schema/travel';
+import { NewItemType, SelectItemsType, travels, UpdateItemType } from '@/schema/travel';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
-import { eq } from 'drizzle-orm';
+import { buildWhereClause } from '@/utils/sql';
+import { count, eq } from 'drizzle-orm';
 
-
-export async function getItems(options: PagerParamsType) {
+export async function getItems(options: SelectItemsType) {
     const { pageNum, pageSize } = options;
-    const offset = (pageNum - 1) * pageSize;
+    const offset = (+pageNum - 1) * +pageSize;
 
-    return await db
+    const whereCon = buildWhereClause(options, travels);
+
+    const totalArr = await db.select({ count: count() }).from(travels).where(whereCon);
+
+    const items =  await db
         .select()
         .from(travels)
         .offset(offset)
-        .limit(pageSize);
+        .limit(+pageSize);
+
+    return {
+        data: items,
+        total: totalArr[0]?.count || 0
+    }
 }
 
 export async function updateItem(item: UpdateItemType) {

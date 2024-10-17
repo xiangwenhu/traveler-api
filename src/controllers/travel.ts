@@ -1,5 +1,6 @@
 
-import { deleteSchema, newSchema, updateSchema } from '@/schema/travel';
+import { deleteSchema, newSchema, selectSchema, updateSchema } from '@/schema/travel';
+import { SelectItemsType } from '@/schema/user';
 import {
  addItem,
  updateItem,
@@ -28,9 +29,9 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   });
 });
 
-export const getItemsHandler = createHandler(async (req, res) => {
+export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   // @ts-ignore
-  const pager = req.query as PagerParams;
+  const pager = req.query as SelectItemsType;
 
   const users = await getItems(pager);
 

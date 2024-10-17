@@ -2,6 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import { int, mysqlEnum, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import { pagerSchame, zNumberString } from './common';
 
 export const resources = mysqlTable('resources', {
     id: int('id').primaryKey().autoincrement(),
@@ -17,17 +18,24 @@ export const resources = mysqlTable('resources', {
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
 });
 
-export const selectSchema = createSelectSchema(resources);
+export const schema = createSelectSchema(resources);
+
+
+export const selectSchema = z.object({
+    query: z.object({
+        travelId: zNumberString
+    }).merge(pagerSchame)
+})
 
 // 删除
 export const deleteSchema = z.object({
-    body: selectSchema.pick({
+    body: schema.pick({
         id: true,
     }),
 });
 
 export const updateSchema = z.object({
-    body: selectSchema
+    body: schema
         .pick({
             id: true,
             travelId: true,
@@ -42,7 +50,7 @@ export const updateSchema = z.object({
 });
 
 export const newSchema = z.object({
-    body: selectSchema.pick({
+    body: schema.pick({
         travelId: true,
         type: true,
         url: true,
@@ -57,3 +65,4 @@ export const newSchema = z.object({
 export type ItemType = InferSelectModel<typeof resources>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdataItemType = z.infer<typeof updateSchema>['body'];
+export type SelectItemsType = z.infer<typeof selectSchema>["query"];

@@ -3,6 +3,7 @@ import { boolean, int, mysqlTable, text, timestamp, varchar, double } from 'driz
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { resources } from './resource';
+import { pagerSchame } from './common';
 
 export const travels = mysqlTable('travels', {
     id: int('id').primaryKey().autoincrement(),
@@ -20,17 +21,20 @@ export const travels = mysqlTable('travels', {
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
 });
 
-export const selectSchema = createSelectSchema(travels);
+export const schema = createSelectSchema(travels);
+export const selectSchema = z.object({
+    query: z.object({}).merge(pagerSchame)
+})
 
 // 删除
 export const deleteSchema = z.object({
-    body: selectSchema.pick({
+    body: schema.pick({
         id: true,
     }),
 });
 
 export const updateSchema = z.object({
-    body: selectSchema
+    body: schema
         .pick({
             id: true,
             title: true,
@@ -48,7 +52,7 @@ export const updateSchema = z.object({
 });
 
 export const newSchema = z.object({
-    body: selectSchema.pick({
+    body: schema.pick({
         title: true,
         description: true,
         cover: true,
@@ -71,3 +75,4 @@ export const tralvelRelations = relations(travels, ({ one, many }) => ({
 export type ItemType = InferSelectModel<typeof travels>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
+export type SelectItemsType = z.infer<typeof selectSchema>['query'];

@@ -4,8 +4,6 @@ import {
 import { createHandler } from '@/utils/create';
 
 export const getItemsHandler = createHandler(async (_req, res) => {
-  const users = await getItems();
-  res.status(200).json({
-    users,
-  });
+  const data = await getItems();
+  res.status(200).json(data);
 });

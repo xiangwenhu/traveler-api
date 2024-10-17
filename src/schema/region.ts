@@ -2,6 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import { int, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import { zNumberString } from './common';
 
 export const regions = mysqlTable('regions', {
   id: int('id').primaryKey().autoincrement(),
@@ -17,8 +18,8 @@ export type Region = InferSelectModel<typeof regions>;
 const schema = createSelectSchema(regions);
 
 export const selectSchema = z.object({
-  body: schema.pick({
-    parentCode: true,
+  query: z.object({
+    parentCode:  zNumberString
   }),
 });
 

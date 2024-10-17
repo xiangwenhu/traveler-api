@@ -6,11 +6,11 @@ import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
 
 export default createRouter((router: Router) => {
-  router.use(
-    authenticate({
-      verifyAdmin: true,
-    }),
-  );
+  // router.use(
+  //   authenticate({
+  //     verifyAdmin: true,
+  //   }),
+  // );
 
   router.get('/getItems', getItemsHandler);
 });

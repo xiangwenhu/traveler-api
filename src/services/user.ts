@@ -90,7 +90,7 @@ export async function updateItem({ name, email, password, status, id }: UpdateIt
 
 export async function getItems(query: SelectItemsType) {
   const { pageNum, pageSize, ...conditions} = query;
-  const offset = (pageNum! - 1) * pageSize!;
+  const offset = (+pageNum! - 1) * +pageSize!;
 
   const whereCon = buildWhereClause(conditions, users);
 
@@ -98,7 +98,7 @@ export async function getItems(query: SelectItemsType) {
   .from(users)
   .where(whereCon)
   .offset(offset)
-  .limit(pageSize!);
+  .limit(+pageSize!);
   return usersList;
 }
 
