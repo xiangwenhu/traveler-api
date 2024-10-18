@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { boolean, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
+import { boolean, int, mysqlTable, tinyint, timestamp, varchar, } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { pagerSchame } from './common';
@@ -10,7 +10,7 @@ export const users = mysqlTable('users', {
   name: varchar('name', { length: 255 }).notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   password: varchar('password', { length: 255 }).notNull(),
-  status: boolean('status').notNull().default(false),
+  status: tinyint('status').notNull().default(1),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
   isAdmin: boolean('is_admin').notNull().default(false),

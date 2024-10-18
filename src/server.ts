@@ -7,6 +7,7 @@ import { mw as requestIp } from 'request-ip';
 import { logger } from './utils/logger';
 import './utils/env';
 import routes from './routes/routes';
+import useProxy from './routes/proxy';
 import { errorHandler, handle404Error } from './utils/errors';
 import path from 'node:path';
 
@@ -49,6 +50,7 @@ app.get('/healthcheck', (_req, res) => {
   });
 });
 
+useProxy(app);
 app.use('/api', routes);
 
 app.all('*', handle404Error);

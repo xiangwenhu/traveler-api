@@ -45,7 +45,8 @@ export enum EnumErrorCode {
   RANGE_NOT_SATISFIABLE = 40016,
   EXPECTATION_FAILED = 40017,
   TEAPOT = 40018,
-  INTERNAL_ERROR = 99999
+  INTERNAL_ERROR = 99999,
+  PROXY_ERROR = 30000
 }
 
 
@@ -100,7 +101,7 @@ export function getMessageFromErrorCode(code: ErrorCodeNumber): string {
     case 60000:
       return 'The request contains invalid or missing fields.';
     case 40001:
-      return 'You are not authorized to access this resource.';
+      return '登录失败';
     case 40004:
       return 'The requested resource was not found.';
     case 40009:

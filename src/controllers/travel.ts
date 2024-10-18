@@ -36,7 +36,7 @@ export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   // @ts-ignore
   const pager = req.query as SelectItemsType;
 
-  const data = await getItems(pager);
+  const data = await getItems(pager as any);
 
   res.status(200).json({
     code: 0,

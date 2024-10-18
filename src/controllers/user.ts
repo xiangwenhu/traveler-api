@@ -63,7 +63,8 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
 
   const { user } = res.locals as { user: ItemType };
 
-  if (user.account === 'admin') {
+  // id = 1 超管，还是查询一次？
+  if (user.account !== 'admin' || id == 1) {
     throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
       message: 'You are not authorized to delete this user',
     });

@@ -6,6 +6,7 @@ import regionRoutes from './region';
 import aliossRoutes from './alioss';
 import resourceRoutes from './resource';
 import travelRoutes from './travel';
+// import proxyRoutes from './proxy';
 
 export default createRouter((router: Router) => {
   router.use('/admin', adminRoutes);
@@ -13,5 +14,6 @@ export default createRouter((router: Router) => {
   router.use("/region", regionRoutes);
   router.use("/ali", aliossRoutes),
   router.use("/resource", resourceRoutes);
-  router.use("/travel", travelRoutes)
+  router.use("/travel", travelRoutes);
+  // router.use("/proxy", proxyRoutes)
 });

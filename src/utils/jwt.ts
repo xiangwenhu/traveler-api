@@ -1,6 +1,6 @@
 import process from 'node:process';
 import JWT from 'jsonwebtoken';
-import { BackendError } from './errors';
+import { BackendError, EnumErrorCode } from './errors';
 
 const JWT_CONFIG: JWT.SignOptions = {
   expiresIn: '24h',
@@ -20,12 +20,12 @@ export function verifyToken(token: string) {
   }
   catch (err) {
     if (err instanceof JWT.TokenExpiredError) {
-      throw new BackendError('UNAUTHORIZED', {
+      throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
         message: 'Token expired',
       });
     }
 
-    throw new BackendError('UNAUTHORIZED', {
+    throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
       message: 'Invalid token',
     });
   }

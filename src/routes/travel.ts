@@ -18,6 +18,6 @@ export default createRouter((router: Router) => {
 
   router.post('/create', addItemHandler);
   router.get('/getItems', getItemsHandler);
-  router.post('/remove', deleteHandler);
+  router.post('/delete', deleteHandler);
   router.put('/update', updateHandler);
 });
