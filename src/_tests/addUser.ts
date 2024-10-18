@@ -5,7 +5,7 @@ import * as userS from '../services/user';
   await userS.addItem({
     account: 'admin',
     password: 'admin',
-    status: true,
+    status: 1,
     name: '管理员',
     isAdmin: true,
     email: 'admin@admin.com',

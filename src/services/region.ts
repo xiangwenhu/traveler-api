@@ -4,6 +4,8 @@ import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 
 export async function addItem(item: NewItemType) {
+
+  // TODO:: 检查code，如果存在，应该提示错误
   const [newItem] = await db
     .insert(regions)
     .values({
