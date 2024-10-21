@@ -2,6 +2,7 @@ import '../utils/env';
 import path from 'node:path';
 import type { NewItemType, Region } from '@/schema/region';
 import { addItem } from '@/services/region';
+import { PCA_CHINA_CODE } from '@/const';
 
 export interface AreaItem {
   code: number;
@@ -11,7 +12,7 @@ export interface AreaItem {
 
 async function adRegion(area: AreaItem, parentCode: number | undefined) {
   const region: NewItemType = {
-    parentCode: parentCode || 0,
+    parentCode: parentCode || PCA_CHINA_CODE,
     name: area.name,
     code: area.code,
   };

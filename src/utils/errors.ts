@@ -190,7 +190,9 @@ export function errorHandler(error: unknown, req: Request, res: Response<{
     details = error;
   }
 
-  code = 9999;
+  if (code == undefined) {
+    code = 9999;
+  }
   message = message ?? getMessageFromErrorCode(code);
   details = details ?? error;
 

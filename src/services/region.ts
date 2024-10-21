@@ -1,5 +1,5 @@
 import { type NewItemType, regions } from '@/schema/region';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 
@@ -21,8 +21,32 @@ export async function addItem(item: NewItemType) {
 }
 
 
-export async function getItems(parentCode: number) { 
-    const items = await db.select().from(regions).where(eq(regions.parentCode, parentCode))
-    return items;
-  }
-  
+export async function getItems(parentCode: number) {
+  // const items = await db
+  // .select()
+  // .from(regions)
+  // .where(eq(regions.parentCode, parentCode))    
+  // return items;
+
+  // 子查询：计算每个子节点下的子节点数量
+  const subQuery = db
+    .select({
+      childParentCode: regions.parentCode,
+      childrenNum: sql<number>`COUNT(*)`.as('childrenNum')
+    })
+    .from(regions)
+    .groupBy(regions.parentCode)
+    .as('subquery');
+
+  // 主查询：获取子节点并加入子节点数量
+  const result = await db
+    .select({
+      name: regions.name,
+      code: regions.code,
+      childrenNum: sql<number>`COALESCE((SELECT childrenNum FROM ${subQuery} WHERE ${subQuery.childParentCode} = ${regions.code}), 0)`
+    })
+    .from(regions)
+    .where(eq(regions.parentCode, parentCode));
+
+  return result;
+}
