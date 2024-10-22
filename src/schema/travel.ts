@@ -1,5 +1,5 @@
 import { relations, type InferSelectModel } from 'drizzle-orm';
-import { boolean, int, mysqlTable, text, timestamp, varchar, float } from 'drizzle-orm/mysql-core';
+import { boolean, int, mysqlTable, text, timestamp, varchar, double } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { resources } from './resource';
@@ -14,8 +14,8 @@ export const travels = mysqlTable('travels', {
     city: int('city').notNull(),
     county: int('county'),
     address: varchar('address', { length: 255 }).notNull(),
-    longitude: float().notNull(),
-    latitude: float().notNull(),
+    longitude: double().notNull(),
+    latitude: double().notNull(),
     date: timestamp('date', { mode: "string" }).notNull(),
     createdAt: timestamp('created_at').$defaultFn(()=> new Date()),
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
