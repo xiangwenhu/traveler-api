@@ -1,9 +1,11 @@
 import { PagerParamsType } from '@/schema/common';
+import { regions } from '@/schema/region';
 import { NewItemType, SelectItemsType, travels, UpdateItemType } from '@/schema/travel';
 import { db } from '@/utils/db';
 import { BackendError, EnumErrorCode } from '@/utils/errors';
 import { buildWhereClause } from '@/utils/sql';
-import { count, eq } from 'drizzle-orm';
+import { count, eq , aliasedTable} from 'drizzle-orm';
+
 
 export async function getItems(options: SelectItemsType) {
     const { pageNum, pageSize } = options;
@@ -13,11 +15,36 @@ export async function getItems(options: SelectItemsType) {
 
     const totalArr = await db.select({ count: count() }).from(travels).where(whereCon);
 
+
+    const regionsC = aliasedTable(regions, "regionsC");
+    const regionsCY = aliasedTable(regions, "regionsCY");
+
+
     const items = await db
-        .select()
+        .select({            
+            id: travels.id,
+            title: travels.title,
+            description: travels.description,
+            cover: travels.cover,
+            date: travels.date,
+            latitude: travels.latitude,
+            longitude: travels.longitude,
+            province: regions.code,
+            city: regionsC.code,
+            county: regionsCY.code,
+            provinceName: regions.name,
+            cityName: regionsC.name,
+            countyName: regionsCY.name,
+            address: travels.address,
+            createdAt: travels.createdAt,
+            updatedAt: travels.updatedAt,
+        })
         .from(travels)
         .offset(offset)
-        .limit(+pageSize);
+        .limit(+pageSize)
+        .leftJoin(regions, eq(regions.code, travels.province))
+        .leftJoin(regionsC,  eq(regionsC.code, travels.city))
+        .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
 
     return {
         list: items,
