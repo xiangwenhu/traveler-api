@@ -1,10 +1,10 @@
 import { PagerParamsType } from '@/schema/common';
 import { regions } from '@/schema/region';
-import { NewItemType, SelectItemsType, travels, UpdateItemType } from '@/schema/travel';
+import { NewItemType, SelectItemsType, StatisticsItemsType, travels, UpdateItemType } from '@/schema/travel';
 import { db } from '@/utils/db';
 import { BackendError, EnumErrorCode } from '@/utils/errors';
-import { buildWhereClause } from '@/utils/sql';
-import { count, eq , aliasedTable} from 'drizzle-orm';
+import { buildGroupByClause, buildWhereClause, customCount } from '@/utils/sql';
+import { count, eq, aliasedTable } from 'drizzle-orm';
 
 
 export async function getItems(options: SelectItemsType) {
@@ -21,7 +21,7 @@ export async function getItems(options: SelectItemsType) {
 
 
     const items = await db
-        .select({            
+        .select({
             id: travels.id,
             title: travels.title,
             description: travels.description,
@@ -43,7 +43,7 @@ export async function getItems(options: SelectItemsType) {
         .offset(offset)
         .limit(+pageSize)
         .leftJoin(regions, eq(regions.code, travels.province))
-        .leftJoin(regionsC,  eq(regionsC.code, travels.city))
+        .leftJoin(regionsC, eq(regionsC.code, travels.city))
         .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
 
     return {
@@ -66,7 +66,6 @@ export async function updateItem(item: UpdateItemType) {
     return updatedUser;
 }
 
-
 export async function addItem(item: NewItemType) {
     const [newItem] = await db
         .insert(travels)
@@ -80,8 +79,60 @@ export async function addItem(item: NewItemType) {
     return newItem;
 }
 
-
 export async function deleteItem(id: number) {
     const [deletedItem] = await db.delete(travels).where(eq(travels.id, id));
     return deletedItem;
+}
+
+
+
+function getStatisticsColInfo(options: StatisticsItemsType) {
+    if (!options.province) return {
+        count: travels.province,
+        groupBy: travels.province,
+        leftJoin: travels.province,
+    }
+    if (!options.city) return {
+        count: travels.city,
+        groupBy: travels.city,
+        leftJoin: travels.city
+    }
+    if (!options.county) return {
+        count: travels.county,
+        groupBy: travels.county,
+        leftJoin: travels.county
+    }
+    return {
+        count: undefined,
+        groupBy: travels.county,
+        leftJoin: travels.county
+    }
+}
+
+
+export async function statisticsItems(options: StatisticsItemsType) {
+
+    const whereClause = buildWhereClause(options, travels);
+    const colInfo = getStatisticsColInfo(options);
+
+    // 先分组计算
+    const sq = db.select({
+        code: colInfo.groupBy,
+        count: customCount(colInfo.count)
+    })
+        .from(travels)
+        .where(whereClause)
+        .groupBy(colInfo.groupBy)
+        .as("tt");
+
+
+    // 获取区域name
+    const result = await db.select({
+        code: sq.code,
+        count: sq.count,
+        name: regions.name
+    })
+        .from(sq).leftJoin(regions, eq(sq.code, regions.code));
+
+    return result;
 }

@@ -1,19 +1,20 @@
 
-import { deleteSchema, newSchema, selectSchema, updateSchema } from '@/schema/travel';
+import { deleteSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '@/schema/travel';
 import { SelectItemsType } from '@/schema/user';
 import {
  addItem,
  updateItem,
  deleteItem,
  getItems,
+ statisticsItems,
 } from '@/services/travel';
 import type { PagerParams } from '@/types/service';
 import { createHandler } from '@/utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
-  const user = req.body;
+  const data = req.body;
 
-  await addItem(user);
+  await addItem(data);
 
   res.status(201).json({
     code: 0
@@ -47,9 +48,23 @@ export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
 
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
 
-  const user = req.body;
+  const data = req.body;
 
-  const updatedUser = await updateItem(user);
+  const updatedUser = await updateItem(data);
+
+  res.status(200).json({
+    data: updatedUser,
+    code: 0
+  });
+});
+
+
+
+export const statisticsHandler = createHandler(statisticsSchama, async (req, res) => {
+
+  const options = req.query;
+
+  const updatedUser = await statisticsItems(options);
 
   res.status(200).json({
     data: updatedUser,

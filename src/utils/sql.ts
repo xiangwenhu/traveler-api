@@ -1,5 +1,5 @@
-import { and, eq, SQL } from "drizzle-orm";
-import { MySqlTableWithColumns } from "drizzle-orm/mysql-core";
+import { and, AnyColumn, eq, sql, SQL } from "drizzle-orm";
+import { MySqlColumn, MySqlTableWithColumns } from "drizzle-orm/mysql-core";
 
 
 
@@ -34,3 +34,41 @@ export function buildWhereClause(filters: Record<string, any>, tableSchema: MySq
   // 使用 and 函数组合所有的条件
   return and(...whereConditions);
 }
+
+export function buildGroupByClause(filters: Record<string, any>, tableSchema: MySqlTableWithColumns<any>, whiteList: string[] = []) {
+
+  const wList = WHITE_LIST.concat(whiteList);
+
+  const conditions: MySqlColumn[] = Object.entries(filters).map(([key, value]) => {
+
+    if (wList.includes(key)) {
+      return undefined;
+    }
+
+    // 检查表模式中是否包含当前键
+    const column = tableSchema[key];
+    if (column) {
+      return column;
+    }
+    // 如果列不存在
+    return undefined;
+  }).filter(Boolean) as MySqlColumn[]; // 过滤掉任何可能的 null 值
+
+  // 如果没有有效的条件，则返回 undefined
+  if (conditions.length === 0) {
+    return [];
+  }
+
+  // 使用 and 函数组合所有的条件
+  return conditions
+}
+
+
+
+export const customCount = (column?: AnyColumn, alias = 'c_count') => {
+  if (column) {
+    return sql<number>`count(${column})`.as(alias); // In MySQL cast to unsigned integer
+  } else {
+    return sql<number>`count(*)`.as(alias); // In MySQL cast to unsigned integer
+  }
+};

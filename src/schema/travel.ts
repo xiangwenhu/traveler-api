@@ -3,7 +3,7 @@ import { boolean, int, mysqlTable, text, timestamp, varchar, float } from 'drizz
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { resources } from './resource';
-import { pagerSchame } from './common';
+import { pagerSchame, zNumberString } from './common';
 
 export const travels = mysqlTable('travels', {
     id: int('id').primaryKey().autoincrement(),
@@ -23,7 +23,11 @@ export const travels = mysqlTable('travels', {
 
 export const schema = createSelectSchema(travels);
 export const selectSchema = z.object({
-    query: z.object({}).merge(pagerSchame)
+    query:  schema.pick({
+        province: true,
+        city: true,
+        county: true
+    }).partial().merge(pagerSchame)
 })
 
 // 删除
@@ -72,7 +76,17 @@ export const tralvelRelations = relations(travels, ({ one, many }) => ({
 }));
 
 
+export const statisticsSchama =  z.object({
+    query: z.object({
+        province: zNumberString,
+        city: zNumberString,
+        county: zNumberString
+    }).partial(),
+})
+
+
 export type ItemType = InferSelectModel<typeof travels>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
+export type StatisticsItemsType = z.infer<typeof statisticsSchama>['query'];
