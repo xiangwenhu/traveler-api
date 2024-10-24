@@ -6,12 +6,12 @@ import { pagerSchame, zNumberString } from './common';
 
 export const resources = mysqlTable('resources', {
     id: int('id').primaryKey().autoincrement(),
-    travelId:int("travelId").notNull(),
-    type: mysqlEnum(["image", "audio", "video"]).notNull(),
-    url: varchar('name', { length: 255 }).notNull(),
+    travelId: int("travelId").notNull(),
+    type: mysqlEnum('type', ["image", "audio", "video", 'text']).notNull(),
+    url: varchar('url', { length: 255 }).notNull(),
     title: varchar('title', { length: 255 }).notNull(),
     duration: int('duration'),
-    size: int('duration').notNull(),
+    size: int('size').notNull(),
     width: int('width'),
     height: int('height'),
     createdAt: timestamp('created_at').notNull().defaultNow(),

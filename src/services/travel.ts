@@ -52,6 +52,11 @@ export async function getItems(options: SelectItemsType) {
     }
 }
 
+export async function getItemById(id: number) {
+    const [item] = await db.select().from(travels).where(eq(travels.id, id)).limit(1);
+    return item;
+}
+
 export async function updateItem(item: UpdateItemType) {
     const [updatedUser] = await db
         .update(travels)

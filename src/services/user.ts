@@ -7,14 +7,14 @@ import { type NewItemType, SelectItemsType, type UpdateItemType, users } from '.
 import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 
-export async function getUserByUserId(userId: number) {
-  const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-  return user;
+export async function getItemById(id: number) {
+  const [item] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return item;
 }
 
-export async function getUserByAccount(account: string) {
-  const [user] = await db.select().from(users).where(eq(users.account, account)).limit(1);
-  return user;
+export async function getItemByAccount(account: string) {
+  const [item] = await db.select().from(users).where(eq(users.account, account)).limit(1);
+  return item;
 }
 
 export async function addItem(user: NewItemType) {
@@ -52,9 +52,9 @@ export async function verifyUser(_email: string) {
 }
 
 export async function deleteItem(id: number) {
-  const user = await getUserByUserId(id);
+  const item = await getItemById(id);
 
-  if (!user)
+  if (!item)
     throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
 
   const [deletedUser] = await db.delete(users).where(eq(users.id, id));
@@ -74,17 +74,17 @@ export async function updateItem({ name, email, password, status, id }: UpdateIt
     upUser.password = hashedPassword;
   }
 
-  const [updatedUser] = await db
+  const [updatedItem] = await db
     .update(users)
     .set(upUser)
     .where(eq(users.id, id!));
-  if (!updatedUser) {
+  if (!updatedItem) {
     throw new BackendError(EnumErrorCode.USER_NOT_FOUND, {
       message: 'User could not be updated',
     });
   }
 
-  return updatedUser;
+  return updatedItem;
 }
 
 

@@ -4,7 +4,8 @@ import {
   deleteHandler,
   updateHandler,
   getItemsHandler,
-  statisticsHandler
+  statisticsHandler,
+  getItemByIdHandler
 } from '@/controllers/travel';
 import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
@@ -21,5 +22,6 @@ export default createRouter((router: Router) => {
   router.get('/getItems', getItemsHandler);
   router.post('/delete', deleteHandler);
   router.put('/update', updateHandler);
-  router.get("/statistics", statisticsHandler)
+  router.get("/statistics", statisticsHandler);
+  router.get("/getItemById", getItemByIdHandler)
 });

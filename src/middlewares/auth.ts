@@ -1,4 +1,4 @@
-import { getUserByAccount, getUserByUserId } from '@/services/user';
+import { getItemByAccount, getItemById } from '@/services/user';
 import { createHandler } from '@/utils/create';
 import { BackendError, EnumErrorCode } from '@/utils/errors';
 import { verifyToken } from '@/utils/jwt';
@@ -25,7 +25,7 @@ export function authenticate({ verifyAdmin } = {
 
     const { account } = verifyToken(token);
 
-    const user = await getUserByAccount(account);
+    const user = await getItemByAccount(account);
 
     if (!user)
       throw new BackendError(EnumErrorCode.USER_NOT_FOUND);

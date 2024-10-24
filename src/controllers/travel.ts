@@ -1,5 +1,5 @@
 
-import { deleteSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '@/schema/travel';
+import { deleteSchema, getItemByIdSchema, GetItemByIdType, newSchema, selectSchema, statisticsSchama, updateSchema } from '@/schema/travel';
 import { SelectItemsType } from '@/schema/user';
 import {
  addItem,
@@ -7,6 +7,7 @@ import {
  deleteItem,
  getItems,
  statisticsItems,
+ getItemById,
 } from '@/services/travel';
 import type { PagerParams } from '@/types/service';
 import { createHandler } from '@/utils/create';
@@ -38,6 +39,18 @@ export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   const pager = req.query as SelectItemsType;
 
   const data = await getItems(pager as any);
+
+  res.status(200).json({
+    code: 0,
+    data
+  });
+  
+});
+
+export const getItemByIdHandler = createHandler(getItemByIdSchema, async (req, res) => {
+  const query = req.query as GetItemByIdType;
+
+  const data = await getItemById(+query.id);
 
   res.status(200).json({
     code: 0,

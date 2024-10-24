@@ -28,6 +28,12 @@ export const selectSchema = z.object({
         city: true,
         county: true
     }).partial().merge(pagerSchame)
+});
+
+export const getItemByIdSchema = z.object({
+    query: z.object({
+        id: zNumberString
+    })
 })
 
 // 删除
@@ -90,3 +96,4 @@ export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
 export type StatisticsItemsType = z.infer<typeof statisticsSchama>['query'];
+export type GetItemByIdType = z.infer<typeof getItemByIdSchema>['query'];

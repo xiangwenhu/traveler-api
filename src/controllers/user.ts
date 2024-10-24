@@ -13,7 +13,7 @@ import {
 import {
   addItem,
   deleteItem,
-  getUserByAccount,
+  getItemByAccount,
   getItems,
   updateItem,
 } from '@/services/user';
@@ -25,7 +25,7 @@ import generateToken from '@/utils/jwt';
 export const loginHandler = createHandler(loginSchema, async (req, res) => {
   const { account, password } = req.body;
   consola.log('body:', req.body);
-  const user = await getUserByAccount(account);
+  const user = await getItemByAccount(account);
 
   if (!user)
     throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
@@ -43,7 +43,7 @@ export const loginHandler = createHandler(loginSchema, async (req, res) => {
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const user = req.body;
 
-  const existingUser = await getUserByAccount(user.account);
+  const existingUser = await getItemByAccount(user.account);
 
   if (existingUser) {
     throw new BackendError(EnumErrorCode.CONFLICT, {
