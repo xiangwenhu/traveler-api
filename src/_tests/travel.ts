@@ -3,7 +3,8 @@ import { statisticsItems } from '@/services/travel';
 
 
 statisticsItems({
-    province: 430000 + '',
-    city: 431200 + '',
-    county: 431229 + ''
+    province: 120000 + '',
+    city: 120111 + ''
+}).then(res=> {
+    console.log("res:", res)
 })

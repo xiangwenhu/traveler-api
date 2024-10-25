@@ -5,6 +5,7 @@ import { db } from '@/utils/db';
 import { BackendError, EnumErrorCode } from '@/utils/errors';
 import { buildGroupByClause, buildWhereClause, customCount } from '@/utils/sql';
 import { count, eq, aliasedTable } from 'drizzle-orm';
+import { getItems as getRegionItems } from "./region";
 
 
 export async function getItems(options: SelectItemsType) {
@@ -91,17 +92,40 @@ export async function deleteItem(id: number) {
 
 
 
-function getStatisticsColInfo(options: StatisticsItemsType) {
+async function getStatisticsColInfo(options: StatisticsItemsType) {
     if (!options.province) return {
         count: travels.province,
         groupBy: travels.province,
         leftJoin: travels.province,
     }
+
+    // 比如台湾省， 只到省
+    const cityChilren = await getRegionItems(+options.province);
+    if (cityChilren.length == 0) {
+        return {
+            count: travels.province,
+            groupBy: travels.province,
+            leftJoin: travels.province,
+        }
+    }
+
     if (!options.city) return {
         count: travels.city,
         groupBy: travels.city,
         leftJoin: travels.city
     }
+
+
+    // 比如北京，天津，直到 二级， 北京/东城
+    const countyChilren = await getRegionItems(+options.city);
+    if (countyChilren.length == 0) {
+        return {
+            count: travels.city,
+            groupBy: travels.city,
+            leftJoin: travels.city,
+        }
+    }
+
     if (!options.county) return {
         count: travels.county,
         groupBy: travels.county,
@@ -118,7 +142,7 @@ function getStatisticsColInfo(options: StatisticsItemsType) {
 export async function statisticsItems(options: StatisticsItemsType) {
 
     const whereClause = buildWhereClause(options, travels);
-    const colInfo = getStatisticsColInfo(options);
+    const colInfo = await getStatisticsColInfo(options);
 
     // 先分组计算
     const sq = db.select({
@@ -132,12 +156,14 @@ export async function statisticsItems(options: StatisticsItemsType) {
 
 
     // 获取区域name
-    const result = await db.select({
+    const query = db.select({
         code: sq.code,
         count: sq.count,
         name: regions.name
     })
         .from(sq).leftJoin(regions, eq(sq.code, regions.code));
 
+    console.log("query:", query.toSQL());
+    const result = await query;
     return result;
 }

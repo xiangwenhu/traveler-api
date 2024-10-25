@@ -5,6 +5,7 @@ import {
  updateItem,
  deleteItem,
  getItems,
+ getByTraverlId,
 } from '@/services/resource';
 import { createHandler } from '@/utils/create';
 
@@ -32,7 +33,7 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
 export const getItemsHandler = createHandler(selectSchema,  async (req, res) => {
   const selectOptions = req.query as SelectItemsType;
 
-  const data = await getItems(selectOptions);
+  const data = await getByTraverlId(selectOptions);
 
   res.status(200).json({
     code: 0,

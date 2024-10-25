@@ -7,17 +7,24 @@ import { count, eq } from 'drizzle-orm';
 
 
 export async function getByTraverlId(options: {
-    travelId: number
+    travelId: number | string
 } & PagerParamsType) {
     const { travelId, pageNum, pageSize } = options;
     const offset = (+pageNum - 1) * +pageSize;
 
-    return await db
+    const totalArr = await db.select({ count: count() }).from(resources).where(eq(resources.travelId, +travelId));
+
+    const items = await db
         .select()
         .from(resources)
-        .where(eq(resources.travelId, travelId))
+        .where(eq(resources.travelId, +travelId))
         .offset(offset)
         .limit(+pageSize);
+
+    return {
+        list: items,
+        total: totalArr[0]?.count || 0
+    }
 }
 
 export async function updateItem(item: UpdataItemType) {
@@ -62,7 +69,7 @@ export async function getItems(options: SelectItemsType) {
 
     const totalArr = await db.select({ count: count() }).from(resources).where(whereCon);
 
-    const items =  await db
+    const items = await db
         .select()
         .from(resources)
         .offset(offset)

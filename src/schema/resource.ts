@@ -14,7 +14,7 @@ export const resources = mysqlTable('resources', {
     size: int('size').notNull(),
     width: int('width'),
     height: int('height'),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
+    createdAt: timestamp('created_at').$defaultFn(()=> new Date()),
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
 });
 
