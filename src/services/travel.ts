@@ -21,7 +21,7 @@ export async function getItems(options: SelectItemsType) {
     const regionsCY = aliasedTable(regions, "regionsCY");
 
 
-    const items = await db
+    let items = await db
         .select({
             id: travels.id,
             title: travels.title,
@@ -41,6 +41,7 @@ export async function getItems(options: SelectItemsType) {
             updatedAt: travels.updatedAt,
         })
         .from(travels)
+        .where(whereCon)
         .offset(offset)
         .limit(+pageSize)
         .leftJoin(regions, eq(regions.code, travels.province))

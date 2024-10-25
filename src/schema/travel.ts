@@ -17,16 +17,16 @@ export const travels = mysqlTable('travels', {
     longitude: double().notNull(),
     latitude: double().notNull(),
     date: timestamp('date', { mode: "string" }).notNull(),
-    createdAt: timestamp('created_at').$defaultFn(()=> new Date()),
+    createdAt: timestamp('created_at').$defaultFn(() => new Date()),
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
 });
 
 export const schema = createSelectSchema(travels);
 export const selectSchema = z.object({
-    query:  schema.pick({
-        province: true,
-        city: true,
-        county: true
+    query: z.object({
+        province: zNumberString,
+        city: zNumberString,
+        county: zNumberString
     }).partial().merge(pagerSchame)
 });
 
@@ -82,7 +82,7 @@ export const tralvelRelations = relations(travels, ({ one, many }) => ({
 }));
 
 
-export const statisticsSchama =  z.object({
+export const statisticsSchama = z.object({
     query: z.object({
         province: zNumberString,
         city: zNumberString,
