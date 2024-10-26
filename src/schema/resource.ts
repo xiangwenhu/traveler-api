@@ -2,7 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import { int, mysqlEnum, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
-import { pagerSchame, zNumberString } from './common';
+import { pagerSchema, zNumberString } from './common';
 
 export const resources = mysqlTable('resources', {
     id: int('id').primaryKey().autoincrement(),
@@ -24,7 +24,7 @@ export const schema = createSelectSchema(resources);
 export const selectSchema = z.object({
     query: z.object({
         travelId: zNumberString
-    }).merge(pagerSchame)
+    }).merge(pagerSchema)
 })
 
 // 删除

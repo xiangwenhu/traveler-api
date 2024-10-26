@@ -3,7 +3,7 @@ import { boolean, int, mysqlTable, text, timestamp, varchar, double } from 'driz
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { resources } from './resource';
-import { pagerSchame, zNumberString } from './common';
+import { pagerSchema, zNumberString } from './common';
 
 export const travels = mysqlTable('travels', {
     id: int('id').primaryKey().autoincrement(),
@@ -27,7 +27,7 @@ export const selectSchema = z.object({
         province: zNumberString,
         city: zNumberString,
         county: zNumberString
-    }).partial().merge(pagerSchame)
+    }).partial().merge(pagerSchema)
 });
 
 export const getItemByIdSchema = z.object({
