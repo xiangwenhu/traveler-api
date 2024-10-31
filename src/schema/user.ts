@@ -2,7 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import { boolean, int, mysqlTable, tinyint, timestamp, varchar, } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
-import { pagerSchame } from './common';
+import { pagerSchema } from './common';
 
 export const users = mysqlTable('users', {
   id: int('id').primaryKey().autoincrement(),
@@ -26,7 +26,7 @@ export const selectSchema = z.object({
   query: schema.pick({
     account: true,
     name: true
-  }).merge(pagerSchame).partial(),
+  }).merge(pagerSchema).partial(),
 });
 
 export const verifyUserSchema = z.object({
