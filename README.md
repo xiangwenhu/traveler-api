@@ -11,3 +11,11 @@ npx drizzle-kit check
 npx drizzle-kit up
 npx drizzle-kit studio
 ```
+
+## TODO
+1. 旅行标签
+2. 用户旅行自己可见，分享其他人
+3. 旅行计划
+4. 每个旅行，有一个视频剪辑，预览的时候之间播放视频
+5. 菜单: 搜索，
+6. 添加旅行后，跳转到 资源上传页面？
