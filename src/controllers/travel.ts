@@ -15,10 +15,11 @@ import { createHandler } from '@/utils/create';
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const data = req.body;
 
-  await addItem(data);
+  const result = await addItem(data);
 
   res.status(201).json({
-    code: 0
+    code: 0,
+    data: result.insertId
   });
 });
 
