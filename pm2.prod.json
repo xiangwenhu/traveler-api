@@ -4,7 +4,7 @@
       "error_file": "/data/www/logs/travel-api/err.log",
       "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS Z",
       "name": "travel-api",
-      "script": "./dist/index.js",
+      "script": "./build/src/server.js",
       "env": {
         "NODE_ENV": "prod",
         "LOG_PATH": "/data/www/logs/travel-api"
