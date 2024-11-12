@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { boolean, int, mysqlTable, tinyint, timestamp, varchar, } from 'drizzle-orm/mysql-core';
+import { boolean, int, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { pagerSchema } from './common';
@@ -16,7 +16,6 @@ export const users = mysqlTable('users', {
   isAdmin: boolean('is_admin').notNull().default(false),
 });
 
-
 const schema = createSelectSchema(users, {
   email: schema =>
     schema.email.email().regex(/^([\w.%-]+@[a-z0-9.-]+\.[a-z]{2,6})*$/i),
@@ -25,7 +24,7 @@ const schema = createSelectSchema(users, {
 export const selectSchema = z.object({
   query: schema.pick({
     account: true,
-    name: true
+    name: true,
   }).merge(pagerSchema).partial(),
 });
 

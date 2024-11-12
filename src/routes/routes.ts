@@ -10,8 +10,8 @@ import travelRoutes from './travel';
 export default createRouter((router: Router) => {
   router.use('/admin', adminRoutes);
   router.use('/user', userRoutes);
-  router.use("/region", regionRoutes);
-  router.use("/ali", aliossRoutes),
-  router.use("/resource", resourceRoutes);
-  router.use("/travel", travelRoutes);
+  router.use('/region', regionRoutes);
+  router.use('/ali', aliossRoutes);
+  router.use('/resource', resourceRoutes);
+  router.use('/travel', travelRoutes);
 });

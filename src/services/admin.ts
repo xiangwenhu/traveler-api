@@ -1,9 +1,8 @@
-import { users } from '@/schema/user';
-import { db } from '@/utils/db';
 import { count } from 'drizzle-orm';
+import { users } from '../schema/user';
+import { db } from '../utils/db';
 
 export async function getItems() {
-
   const whereCon = {};
 
   const totalArr = await db.select({ count: count() }).from(users);
@@ -23,6 +22,6 @@ export async function getItems() {
 
   return {
     list: items,
-    total: totalArr[0]?.count || 0
-  }
+    total: totalArr[0]?.count || 0,
+  };
 }

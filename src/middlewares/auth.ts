@@ -1,7 +1,7 @@
-import { getItemByAccount, getItemById } from '@/services/user';
-import { createHandler } from '@/utils/create';
-import { BackendError, EnumErrorCode } from '@/utils/errors';
-import { verifyToken } from '@/utils/jwt';
+import { getItemByAccount, getItemById } from '../services/user';
+import { createHandler } from '../utils/create';
+import { BackendError, EnumErrorCode } from '../utils/errors';
+import { verifyToken } from '../utils/jwt';
 
 export function authenticate({ verifyAdmin } = {
   verifyAdmin: false,

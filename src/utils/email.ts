@@ -1,7 +1,7 @@
 import process from 'node:process';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
-import { VerificationEmail } from '@/templates/verification-email';
+import { VerificationEmail } from '../templates/verification-email';
 
 let client: SESClient;
 
@@ -50,7 +50,7 @@ export async function sendVerificationEmail(baseUrl: string, name: string, email
     const res = await client.send(command);
     return res.$metadata.httpStatusCode;
   }
-  catch (_err) {
+  catch (_err: any) {
     return 500;
   }
 }

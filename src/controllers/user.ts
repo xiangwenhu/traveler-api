@@ -2,25 +2,28 @@ import { Buffer } from 'node:buffer';
 import process from 'node:process';
 import argon2 from 'argon2';
 import consola from 'consola';
-import {
-  type ItemType,
+import type {
+  ItemType,
   SelectItemsType,
+} from '../schema/user';
+import {
   deleteSchema,
   loginSchema,
   newSchema,
   updateSchema,
-} from '@/schema/user';
+} from '../schema/user';
+
 import {
   addItem,
   deleteItem,
   getItemByAccount,
   getItems,
   updateItem,
-} from '@/services/user';
-import type { PagerParams } from '@/types/service';
-import { createHandler } from '@/utils/create';
-import { BackendError, EnumErrorCode } from '@/utils/errors';
-import generateToken from '@/utils/jwt';
+} from '../services/user';
+import type { PagerParams } from '../types/service';
+import { createHandler } from '../utils/create';
+import { BackendError, EnumErrorCode } from '../utils/errors';
+import generateToken from '../utils/jwt';
 
 export const loginHandler = createHandler(loginSchema, async (req, res) => {
   const { account, password } = req.body;
@@ -54,7 +57,7 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
   await addItem(user);
 
   res.status(201).json({
-    code: 0
+    code: 0,
   });
 });
 
@@ -64,7 +67,7 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const { user } = res.locals as { user: ItemType };
 
   // id = 1 超管，还是查询一次？
-  if (user.account !== 'admin' || id == 1) {
+  if (user.account !== 'admin' || +id === 1) {
     throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
       message: 'You are not authorized to delete this user',
     });
@@ -86,12 +89,11 @@ export const getItemsHandler = createHandler(async (req, res) => {
 
   res.status(200).json({
     code: 0,
-    data
+    data,
   });
 });
 
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
-
   const user = req.body;
 
   const updatedUser = await updateItem(user);

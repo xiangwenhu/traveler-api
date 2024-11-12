@@ -5,6 +5,7 @@
   },
   "scripts": {
     "build": "esbuild src/server.ts --bundle --outfile=build/server.js --platform=node --format=esm --packages=external",
+    "build2": "tsc -p tsconfig.json",
     "start": "node build/server.js",
     "dev": "tsx watch src/server.ts",
     "generate": "drizzle-kit generate",

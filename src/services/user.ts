@@ -1,9 +1,11 @@
-import { buildWhereClause } from '@/utils/sql';
-import argon2 from 'argon2';
-import { eq } from 'drizzle-orm';
 import { Buffer } from 'node:buffer';
 import process from 'node:process';
-import { type NewItemType, SelectItemsType, type UpdateItemType, users } from '../schema/user';
+import argon2 from 'argon2';
+import { eq } from 'drizzle-orm';
+import { buildWhereClause } from '../utils/sql';
+import type { NewItemType, SelectItemsType, UpdateItemType } from '../schema/user';
+import { users } from '../schema/user';
+
 import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 
@@ -41,7 +43,7 @@ export async function addItem(user: NewItemType) {
 
 /**
  * 邮件激活
- * @param email
+ * ..param email
  */
 export async function verifyUser(_email: string) {
   // const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -87,18 +89,16 @@ export async function updateItem({ name, email, password, status, id }: UpdateIt
   return updatedItem;
 }
 
-
 export async function getItems(query: SelectItemsType) {
-  const { pageNum, pageSize, ...conditions} = query;
+  const { pageNum, pageSize, ...conditions } = query;
   const offset = (+pageNum! - 1) * +pageSize!;
 
   const whereCon = buildWhereClause(conditions, users);
 
   const usersList = await db.select()
-  .from(users)
-  .where(whereCon)
-  .offset(offset)
-  .limit(+pageSize!);
+    .from(users)
+    .where(whereCon)
+    .offset(offset)
+    .limit(+pageSize!);
   return usersList;
 }
-

@@ -2,16 +2,15 @@ import type { Router } from 'express';
 import {
   addItemHandler,
   deleteHandler,
-  updateHandler,
+  getItemByIdHandler,
   getItemsHandler,
   statisticsHandler,
-  getItemByIdHandler
-} from '@/controllers/travel';
-import { authenticate } from '@/middlewares/auth';
-import { createRouter } from '@/utils/create';
+  updateHandler,
+} from '../controllers/travel';
+import { authenticate } from '../middlewares/auth';
+import { createRouter } from '../utils/create';
 
 export default createRouter((router: Router) => {
-
   // router.use(
   //   authenticate({
   //     verifyAdmin: false,
@@ -22,6 +21,6 @@ export default createRouter((router: Router) => {
   router.get('/getItems', getItemsHandler);
   router.post('/delete', deleteHandler);
   router.put('/update', updateHandler);
-  router.get("/statistics", statisticsHandler);
-  router.get("/getItemById", getItemByIdHandler)
+  router.get('/statistics', statisticsHandler);
+  router.get('/getItemById', getItemByIdHandler);
 });

@@ -1,17 +1,14 @@
-import { and, AnyColumn, eq, sql, SQL } from "drizzle-orm";
-import { MySqlColumn, MySqlTableWithColumns } from "drizzle-orm/mysql-core";
-
-
+import type { AnyColumn, SQL } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
+import type { MySqlColumn, MySqlTableWithColumns } from 'drizzle-orm/mysql-core';
 
 const WHITE_LIST = ['pageSize', 'pageNum'];
 
 export function buildWhereClause(filters: Record<string, any>, tableSchema: MySqlTableWithColumns<any>, whiteList: string[] = []) {
-
   const wList = WHITE_LIST.concat(whiteList);
 
   // 将过滤器对象转换为数组并过滤掉 null 或 undefined 值
   const whereConditions: SQL[] = Object.entries(filters).map(([key, value]) => {
-
     if (wList.includes(key)) {
       return undefined;
     }
@@ -36,11 +33,9 @@ export function buildWhereClause(filters: Record<string, any>, tableSchema: MySq
 }
 
 export function buildGroupByClause(filters: Record<string, any>, tableSchema: MySqlTableWithColumns<any>, whiteList: string[] = []) {
-
   const wList = WHITE_LIST.concat(whiteList);
 
   const conditions: MySqlColumn[] = Object.entries(filters).map(([key, value]) => {
-
     if (wList.includes(key)) {
       return undefined;
     }
@@ -60,15 +55,14 @@ export function buildGroupByClause(filters: Record<string, any>, tableSchema: My
   }
 
   // 使用 and 函数组合所有的条件
-  return conditions
+  return conditions;
 }
 
-
-
-export const customCount = (column?: AnyColumn, alias = 'c_count') => {
+export function customCount(column?: AnyColumn, alias = 'c_count') {
   if (column) {
     return sql<number>`count(${column})`.as(alias); // In MySQL cast to unsigned integer
-  } else {
+  }
+  else {
     return sql<number>`count(*)`.as(alias); // In MySQL cast to unsigned integer
   }
-};
+}
