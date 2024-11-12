@@ -16,8 +16,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.504.0",
-    "@react-email/components": "^0.0.14",
-    "@react-email/render": "^0.0.12",
     "ali-oss": "^6.21.0",
     "argon2": "^0.31.2",
     "consola": "^3.2.3",
