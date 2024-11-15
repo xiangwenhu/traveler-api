@@ -1,13 +1,11 @@
-import { aliasedTable, count, eq, sql } from 'drizzle-orm';
-import { PagerParamsType } from '../schema/common';
+import { aliasedTable, count, eq } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import type { NewItemType, SelectItemsType, StatisticsItemsType, UpdateItemType } from '../schema/travel';
 import { travels } from '../schema/travel';
 import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
-import { buildGroupByClause, buildWhereClause, customCount } from '../utils/sql';
+import { buildWhereClause, customCount } from '../utils/sql';
 import { getItems as getRegionItems } from './region';
-import { travelTags } from '../schema/travelTags';
 
 export async function getItems(options: SelectItemsType) {
   const { pageNum, pageSize } = options;
@@ -48,9 +46,6 @@ export async function getItems(options: SelectItemsType) {
     .leftJoin(regions, eq(regions.code, travels.province))
     .leftJoin(regionsC, eq(regionsC.code, travels.city))
     .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
-    .leftJoin(travelTags, eq(travelTags.travelId, travels.id))
-    // .groupBy(travels.id);
-
 
 
   return {
