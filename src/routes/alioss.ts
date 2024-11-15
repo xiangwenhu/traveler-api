@@ -6,7 +6,7 @@ import { assumeRoleHandler } from '../controllers/alioss';
 export default createRouter((router: Router) => {
   router.use(
     authenticate({
-      verifyAdmin: false,
+      verifyAdmin: true,
     }),
   );
 

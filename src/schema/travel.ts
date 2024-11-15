@@ -1,9 +1,10 @@
 import { type InferSelectModel, relations } from 'drizzle-orm';
-import { boolean, double, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
+import { boolean, double, int, mysqlTable, text, timestamp, varchar,json } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { resources } from './resource';
 import { pagerSchema, zNumberString } from './common';
+import { travelTags } from './travelTags';
 
 export const travels = mysqlTable('travels', {
   id: int('id').primaryKey().autoincrement(),
@@ -19,6 +20,7 @@ export const travels = mysqlTable('travels', {
   date: timestamp('date', { mode: 'string' }).notNull(),
   createdAt: timestamp('created_at').$defaultFn(() => new Date()),
   updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
+  tags: json().$defaultFn(()=> [])
 });
 
 export const schema = createSelectSchema(travels);
@@ -58,6 +60,9 @@ export const updateSchema = z.object({
       longitude: true,
       date: true,
     })
+    .merge(z.object({
+      tags: z.array(z.number())
+    }))
     .partial(),
 });
 
@@ -73,7 +78,9 @@ export const newSchema = z.object({
     latitude: true,
     longitude: true,
     date: true,
-  }),
+  }).merge(z.object({
+    tags: z.array(z.number())
+  })),
 });
 
 export const tralvelRelations = relations(travels, ({ one, many }) => ({
@@ -94,3 +101,11 @@ export type UpdateItemType = z.infer<typeof updateSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
 export type StatisticsItemsType = z.infer<typeof statisticsSchama>['query'];
 export type GetItemByIdType = z.infer<typeof getItemByIdSchema>['query'];
+
+
+export const tagsRelations = relations(travelTags, ({ one }) => ({
+	tags: one(travels, {
+		fields: [travelTags.travelId],
+		references: [travels.id],
+	}),
+}));

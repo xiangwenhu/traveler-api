@@ -9,7 +9,6 @@ import {
   statisticsItems,
   updateItem,
 } from '../services/travel';
-import type { PagerParams } from '../types/service';
 import { createHandler } from '../utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
@@ -17,7 +16,16 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
 
   const result = await addItem(data);
 
-  res.status(201).json({
+  // if (Array.isArray(data.tags) && data.tags.length > 0) {
+  //   const ttags = data.tags.map(t => ({
+  //     tagId: t,
+  //     travelId: result.insertId,
+  //   }))
+  //   await addItems(ttags);
+  // }
+
+
+  res.status(200).json({
     code: 0,
     data: result.insertId,
   });
@@ -61,6 +69,15 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const data = req.body;
 
   const updatedUser = await updateItem(data);
+  // await deleteByTravelId(data.id!)
+
+  // if (Array.isArray(data.tags) && data.tags.length > 0) {
+  //   const ttags = data.tags.map(t => ({
+  //     tagId: t,
+  //     travelId: data.id!,
+  //   }))
+  //   await addItems(ttags);
+  // }
 
   res.status(200).json({
     data: updatedUser,
@@ -71,10 +88,10 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
 export const statisticsHandler = createHandler(statisticsSchama, async (req, res) => {
   const options = req.query;
 
-  const updatedUser = await statisticsItems(options);
+  const updatedItem = await statisticsItems(options);
 
   res.status(200).json({
-    data: updatedUser,
+    data: updatedItem,
     code: 0,
   });
 });

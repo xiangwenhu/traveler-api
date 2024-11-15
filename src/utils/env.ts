@@ -8,7 +8,6 @@ const configSchema = z.object({
     .regex(/^\d{4,5}$/)
     .optional()
     .default('3000'),
-  API_BASE_URL: z.string().url().default('/api'),
   DATABASE_URL: z
     .string()
     .url()

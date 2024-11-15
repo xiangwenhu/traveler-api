@@ -31,7 +31,7 @@ export const loginHandler = createHandler(loginSchema, async (req, res) => {
   const user = await getItemByAccount(account);
 
   if (!user)
-    throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
+    throw new BackendError(EnumErrorCode.NOT_FOUND);
 
   const matchPassword = await argon2.verify(user.password, password, {
     salt: Buffer.from(process.env.ARGON_2_SALT as string),
@@ -94,12 +94,12 @@ export const getItemsHandler = createHandler(async (req, res) => {
 });
 
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
-  const user = req.body;
+  const item = req.body;
 
-  const updatedUser = await updateItem(user);
+  const updatedItem = await updateItem(item);
 
   res.status(200).json({
     code: 0,
-    data: updatedUser,
+    data: updatedItem,
   });
 });

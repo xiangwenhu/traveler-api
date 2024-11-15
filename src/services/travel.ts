@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq } from 'drizzle-orm';
+import { aliasedTable, count, eq, sql } from 'drizzle-orm';
 import { PagerParamsType } from '../schema/common';
 import { regions } from '../schema/region';
 import type { NewItemType, SelectItemsType, StatisticsItemsType, UpdateItemType } from '../schema/travel';
@@ -7,6 +7,7 @@ import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 import { buildGroupByClause, buildWhereClause, customCount } from '../utils/sql';
 import { getItems as getRegionItems } from './region';
+import { travelTags } from '../schema/travelTags';
 
 export async function getItems(options: SelectItemsType) {
   const { pageNum, pageSize } = options;
@@ -18,6 +19,7 @@ export async function getItems(options: SelectItemsType) {
 
   const regionsC = aliasedTable(regions, 'regionsC');
   const regionsCY = aliasedTable(regions, 'regionsCY');
+
 
   const items = await db
     .select({
@@ -37,6 +39,7 @@ export async function getItems(options: SelectItemsType) {
       address: travels.address,
       createdAt: travels.createdAt,
       updatedAt: travels.updatedAt,
+      tags: travels.tags
     })
     .from(travels)
     .where(whereCon)
@@ -44,7 +47,11 @@ export async function getItems(options: SelectItemsType) {
     .limit(+pageSize)
     .leftJoin(regions, eq(regions.code, travels.province))
     .leftJoin(regionsC, eq(regionsC.code, travels.city))
-    .leftJoin(regionsCY, eq(regionsCY.code, travels.county));
+    .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
+    .leftJoin(travelTags, eq(travelTags.travelId, travels.id))
+    // .groupBy(travels.id);
+
+
 
   return {
     list: items,

@@ -25,20 +25,20 @@ export async function addItem(user: NewItemType) {
     salt: Buffer.from(process.env.ARGON_2_SALT as string),
   });
 
-  const [newUser] = await db
+  const [newItem] = await db
     .insert(users)
     .values({
       ...user,
       password: hashedPassword,
     });
 
-  if (!newUser) {
+  if (!newItem) {
     throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
       message: 'Failed to add user',
     });
   }
 
-  return newUser;
+  return newItem;
 }
 
 /**
@@ -57,14 +57,14 @@ export async function deleteItem(id: number) {
   const item = await getItemById(id);
 
   if (!item)
-    throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
+    throw new BackendError(EnumErrorCode.NOT_FOUND);
 
   const [deletedUser] = await db.delete(users).where(eq(users.id, id));
   return deletedUser;
 }
 
 export async function updateItem({ name, email, password, status, id }: UpdateItemType) {
-  const upUser: UpdateItemType = {
+  const upItem: UpdateItemType = {
     name,
     email,
     status,
@@ -73,15 +73,15 @@ export async function updateItem({ name, email, password, status, id }: UpdateIt
     const hashedPassword = await argon2.hash(password, {
       salt: Buffer.from(process.env.ARGON_2_SALT as string),
     });
-    upUser.password = hashedPassword;
+    upItem.password = hashedPassword;
   }
 
   const [updatedItem] = await db
     .update(users)
-    .set(upUser)
+    .set(upItem)
     .where(eq(users.id, id!));
   if (!updatedItem) {
-    throw new BackendError(EnumErrorCode.USER_NOT_FOUND, {
+    throw new BackendError(EnumErrorCode.NOT_FOUND, {
       message: 'User could not be updated',
     });
   }
@@ -95,10 +95,10 @@ export async function getItems(query: SelectItemsType) {
 
   const whereCon = buildWhereClause(conditions, users);
 
-  const usersList = await db.select()
+  const items = await db.select()
     .from(users)
     .where(whereCon)
     .offset(offset)
     .limit(+pageSize!);
-  return usersList;
+  return items;
 }

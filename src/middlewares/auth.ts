@@ -28,7 +28,7 @@ export function authenticate({ verifyAdmin } = {
     const user = await getItemByAccount(account);
 
     if (!user)
-      throw new BackendError(EnumErrorCode.USER_NOT_FOUND);
+      throw new BackendError(EnumErrorCode.NOT_FOUND);
 
     if (verifyAdmin && !user.isAdmin) {
       throw new BackendError(EnumErrorCode.UNAUTHORIZED, {

@@ -10,8 +10,8 @@ import {
 import { createHandler } from '../utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
-  const user = req.body;
-  await addItem(user);
+  const item = req.body;
+  await addItem(item);
   res.status(201).json({
     code: 0,
   });
