@@ -26,7 +26,8 @@ const configSchema = z.object({
   ALI_ACC_SECRET: z.string(),
   ALI_OSS_ACS_RAM: z.string(),
   ALI_OSS_BUCKET: z.string(),
-  ALI_OSS_REGION: z.string()
+  ALI_OSS_REGION: z.string(),
+  AMAP_KEY: z.string()
 });
 
 try {
