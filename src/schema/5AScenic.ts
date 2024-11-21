@@ -2,7 +2,7 @@ import { type InferSelectModel, relations } from 'drizzle-orm';
 import { boolean, double, int, mysqlTable, text, timestamp, varchar, json, year } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
-import { pagerSchema, zNumberString } from './common';
+import { pagerSchema1000, zNumberString } from './common';
 
 export const AAAAAScenics = mysqlTable('5AScenics', {
     id: int('id').primaryKey().autoincrement(),
@@ -32,7 +32,7 @@ export const selectSchema = z.object({
         // city: zNumberString,
         // county: zNumberString,
         name: z.string()
-    }).partial().merge(pagerSchema),
+    }).partial().merge(pagerSchema1000),
 });
 
 export const getItemByIdSchema = z.object({

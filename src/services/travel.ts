@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq } from 'drizzle-orm';
+import { aliasedTable, count, eq, sql } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import type { NewItemType, SelectItemsType, StatisticsItemsType, UpdateItemType } from '../schema/travel';
 import { travels } from '../schema/travel';
@@ -37,7 +37,8 @@ export async function getItems(options: SelectItemsType) {
       address: travels.address,
       createdAt: travels.createdAt,
       updatedAt: travels.updatedAt,
-      tags: travels.tags
+      tags: travels.tags,
+      scenicSpots: travels.scenicSpots
     })
     .from(travels)
     .where(whereCon)
@@ -46,6 +47,8 @@ export async function getItems(options: SelectItemsType) {
     .leftJoin(regions, eq(regions.code, travels.province))
     .leftJoin(regionsC, eq(regionsC.code, travels.city))
     .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
+    .orderBy(sql`${travels.id} desc`)
+  
 
 
   return {
