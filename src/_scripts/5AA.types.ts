@@ -43,6 +43,28 @@ export interface AAAAAContent {
      * 纬度
      */
     latitude: number;
+
+    province: string;
+    city: string;
+    district: string;
+
+    province_code: string;
+    city_code: string;
+    district_code: string;
+
+
+    photos: {
+        title: string[] ;
+        url: string;
+    }[];
+
+    alias: string;
+
+    atype: string;
+
+
+    address: string;
+
 }
 interface Sort {
     sorted: boolean;
