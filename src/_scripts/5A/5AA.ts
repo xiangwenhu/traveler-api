@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { AAAAAContent, ResData } from "./5AA.types";
+import { AAAAAContent, ResData } from "../5AA.types";
 import fs from "fs/promises";
 import path from "path";
 

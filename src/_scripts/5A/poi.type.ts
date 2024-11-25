@@ -59,6 +59,9 @@ interface Pois {
     location: string;
     shopid: any[];
     groupbuy_num: string;
+    alias?: string;
+
+    website?: string;
 }
 export interface ResPOI {
     suggestion: Suggestion;

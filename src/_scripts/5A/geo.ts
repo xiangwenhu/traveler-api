@@ -1,6 +1,6 @@
 import path, { resolve } from 'path';
 import fs from "fs"
-import '../utils/env';
+import '../../utils/env';
 import { AAAAAContent } from './5AA.types';
 import axios, { AxiosResponse } from 'axios';
 import { ResJson } from './geo.types';

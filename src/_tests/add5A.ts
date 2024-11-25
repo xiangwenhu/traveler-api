@@ -1,7 +1,7 @@
 import path, { resolve } from 'path';
 import fs from "fs"
 import '../utils/env';
-import { AAAAAContent } from '../_scripts/5AA.types';
+import { AAAAAContent } from '../_scripts/5A/5AA.types';
 import { addItem } from '../services/5AScenic';
 import { NewItemType } from '../schema/5AScenic';
 
