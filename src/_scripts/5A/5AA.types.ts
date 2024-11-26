@@ -65,6 +65,11 @@ export interface AAAAAContent {
 
     address: string;
 
+    isfree: boolean;
+
+
+    website: {title: string, url: string}[]
+
 }
 interface Sort {
     sorted: boolean;

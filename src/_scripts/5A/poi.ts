@@ -8,7 +8,7 @@ import { ResPOI } from './poi.type';
 const AMAP_key = process.env.AMAP_KEY;
 
 
-const jsonPath = path.join(__dirname, "../../data/5a/AAAAA-geo-photos.json");
+const jsonPath = path.join(__dirname, "../../../data/5a/AAAAA-geo-photos.json");
 
 function readJSON() {
     return JSON.parse(fs.readFileSync(jsonPath, "utf-8")) as AAAAAContent[]
@@ -32,14 +32,14 @@ function delay(duration: number = 500) {
     })
 }
 
-async function getPhotos() {
+async function getPOIData() {
     const list = readJSON();
     const MIN_SAVE_VAL = 10;
     for (let i = 0; i < list.length; i++) {
         const item = list[i]!;
 
         try {
-            if (Array.isArray(item.photos)) continue;
+            if (Array.isArray(item.website) && item.website.length > 0) continue;
             const res = await searchPlace({
                 city: item.city_code,
                 keywords: item.name
@@ -47,12 +47,22 @@ async function getPhotos() {
 
             const poi = res.pois[0]!;
 
-            item.photos = poi.photos;
+
+            if(Array.isArray(poi.website) && poi.website.length === 0) continue;
+
+            if (typeof poi.website == "string") {
+                item.website = [{
+                    title: "",
+                    url: poi.website
+                }]
+            }
+
+            if(Array.isArray(poi.website)) item.website =  poi.website
 
             if (i > 0 && i % MIN_SAVE_VAL == 0) {
                 fs.writeFileSync(jsonPath, JSON.stringify(list, undefined, "\t"))
             }
-            console.log(`${new Date().toLocaleTimeString()}:  完成 ${i + 1}/${list.length} ${item.city}`);
+            console.log(`${new Date().toLocaleTimeString()}:  完成 ${i + 1}/${list.length} ${item.name}`);
             await delay(500)
 
         } catch (err) {
@@ -66,7 +76,7 @@ async function getPhotos() {
 }
 
 
-// getPhotos();
+getPOIData();
 
 
 function getErrorItems() {
@@ -89,4 +99,4 @@ function getErrorItems() {
     console.log("items:", items.map(it => it.name))
 }
 
-getErrorItems();
+// getErrorItems();

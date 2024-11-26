@@ -1,8 +1,11 @@
 import { type InferSelectModel, relations } from 'drizzle-orm';
-import { boolean, double, int, mysqlTable, text, timestamp, varchar, json, year } from 'drizzle-orm/mysql-core';
+import { boolean, double, int, mysqlTable, text, timestamp, varchar, json, year , } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { pagerSchema1000, zNumberString } from './common';
+
+
+// TODO::  开放时间，价格，游玩季节等
 
 export const AAAAAScenics = mysqlTable('5AScenics', {
     id: int('id').primaryKey().autoincrement(),
@@ -22,7 +25,11 @@ export const AAAAAScenics = mysqlTable('5AScenics', {
     createdAt: timestamp('created_at').$defaultFn(() => new Date()),
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
     photos: json().$defaultFn(() => []),
-    tags: json().$defaultFn(() => [])
+    tags: json().$defaultFn(() => []),
+    // 官网
+    website: json().$defaultFn(() => []),
+    // 免费
+    isfree: boolean("isfress").$defaultFn(()=> false)
 });
 
 export const schema = createSelectSchema(AAAAAScenics);
