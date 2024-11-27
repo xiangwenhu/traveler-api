@@ -1,5 +1,5 @@
-import type { GetItemByIdType, SelectItemsType } from '../schema/travel';
-import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '../schema/5AScenic';
+import type { GetItemByIdType, SelectItemsType } from '../schema/school';
+import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '../schema/school';
 import {
   addItem,
   deleteItem,
@@ -7,7 +7,7 @@ import {
   getItems,
   statisticsItems,
   updateItem,
-} from '../services/5AScenic';
+} from '../services/school';
 import { createHandler } from '../utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {

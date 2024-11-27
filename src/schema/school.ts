@@ -1,5 +1,5 @@
 import { type InferSelectModel, relations } from 'drizzle-orm';
-import { boolean, double, int, mysqlTable, text, timestamp, varchar, json, year , } from 'drizzle-orm/mysql-core';
+import { boolean, double, int, mysqlTable, text, timestamp, varchar, json, year, mysqlEnum } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { pagerSchema1000, zNumberString } from './common';
@@ -7,12 +7,12 @@ import { pagerSchema1000, zNumberString } from './common';
 
 // TODO::  开放时间，价格，游玩季节等
 
-export const AAAAAScenics = mysqlTable('5AScenics', {
+export const schools = mysqlTable('school', {
     id: int('id').primaryKey().autoincrement(),
     /**
      * 来源方的id
      */
-    sourceId: int('source-id'),
+    schoolId: int('school_id').notNull(),
     name: varchar('name', { length: 255 }).notNull(),
     description: text('description'),
     province: int('province').notNull(),
@@ -21,18 +21,21 @@ export const AAAAAScenics = mysqlTable('5AScenics', {
     address: varchar('address', { length: 255 }).notNull(),
     longitude: double().notNull(),
     latitude: double().notNull(),
-    year: int('year'),
     createdAt: timestamp('created_at').$defaultFn(() => new Date()),
     updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
     photos: json().$defaultFn(() => []),
     tags: json().$defaultFn(() => []),
     // 官网
-    website: json().$defaultFn(() => []),
-    // 免费
-    isfree: boolean("isfress").$defaultFn(()=> false)
+    website: varchar("website", { length: 255 }),
+    // 类型，综合类，师范类
+    type: int().notNull(),
+
+    rank: int().$defaultFn(() => 9999),
+    is985: boolean().default(false),
+    is211: boolean().default(false)
 });
 
-export const schema = createSelectSchema(AAAAAScenics);
+export const schema = createSelectSchema(schools);
 export const selectSchema = z.object({
     query: z.object({
         province: zNumberString,
@@ -63,22 +66,24 @@ export const updateSchema = z.object({
 
 export const newSchema = z.object({
     body: schema.pick({
-        sourceId: true,
+        schoolId: true,
         name: true,
         description: true,
         province: true,
         city: true,
-        county:true,
+        county: true,
         address: true,
-        longitude:true,
-        latitude:true,
-        year:true,
+        longitude: true,
+        latitude: true,
         createdAt: true,
         updatedAt: true,
         photos: true,
         tags: true,
         website: true,
-        isfree: true
+        type: true,
+        rank: true,
+        is211: true,
+        is985: true
     })
 });
 
@@ -91,7 +96,7 @@ export const statisticsSchama = z.object({
     }).partial(),
 });
 
-export type ItemType = InferSelectModel<typeof AAAAAScenics>;
+export type ItemType = InferSelectModel<typeof schools>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
