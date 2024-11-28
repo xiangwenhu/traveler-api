@@ -37,6 +37,8 @@ export async function getItems(options: SelectItemsType) {
       updatedAt: AAAAAScenics.updatedAt,
       tags: AAAAAScenics.tags,
       photos: AAAAAScenics.photos,
+      website: AAAAAScenics.website,
+      isfree: AAAAAScenics.isfree
     })
     .from(AAAAAScenics)
     .where(whereCon)
