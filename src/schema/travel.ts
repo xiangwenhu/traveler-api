@@ -21,7 +21,8 @@ export const travels = mysqlTable('travels', {
   createdAt: timestamp('created_at').$defaultFn(() => new Date()),
   updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
   tags: json("tags").$defaultFn(()=> []),
-  scenicSpots: json("scenic_spots").$defaultFn(()=> [])
+  scenicSpots: json("scenic_spots").$defaultFn(()=> []),
+  schools: json("scenic_spots").$defaultFn(()=> [])
 });
 
 export const schema = createSelectSchema(travels);
@@ -60,7 +61,8 @@ export const updateSchema = z.object({
       latitude: true,
       longitude: true,
       date: true,
-      scenicSpots: true
+      scenicSpots: true,
+      schools: true
     })
     .merge(z.object({
       tags: z.array(z.number())

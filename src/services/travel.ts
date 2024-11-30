@@ -38,7 +38,8 @@ export async function getItems(options: SelectItemsType) {
       createdAt: travels.createdAt,
       updatedAt: travels.updatedAt,
       tags: travels.tags,
-      scenicSpots: travels.scenicSpots
+      scenicSpots: travels.scenicSpots,
+      schools: travels.schools
     })
     .from(travels)
     .where(whereCon)
@@ -49,7 +50,6 @@ export async function getItems(options: SelectItemsType) {
     .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
     .orderBy(sql`${travels.id} desc`)
   
-
 
   return {
     list: items,
