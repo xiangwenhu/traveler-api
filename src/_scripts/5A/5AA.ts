@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
-import { AAAAAContent, ResData } from "../5AA.types";
 import fs from "fs/promises";
 import path from "path";
+import { AAAAAContent, ResData } from "./5AA.types";
 
 
 // 从中华人民共和国文化和旅游部 获取全部  5A景区
