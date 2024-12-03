@@ -17,6 +17,8 @@ export async function getItems() {
       updatedAt: users.updatedAt,
       isAdmin: users.isAdmin,
       id: users.id,
+      associateUsers: users.associateUsers,
+      phone: users.account
     })
     .from(users);
 

@@ -20,7 +20,22 @@ export async function getItemByAccount(account: string) {
 }
 
 export async function addItem(user: NewItemType) {
-  const { password } = user;
+  const { password, account } = user;
+
+  if (typeof account != "string" || account.trim() == "") {
+    throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
+      message: 'invalid account value',
+    });
+  }
+
+  const cUser = await getItemByAccount(account);
+
+  if (cUser) {
+    throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
+      message: 'user already exists',
+    });
+  }
+
   const hashedPassword = await argon2.hash(password, {
     salt: Buffer.from(process.env.ARGON_2_SALT as string),
   });
@@ -63,12 +78,18 @@ export async function deleteItem(id: number) {
   return deletedUser;
 }
 
-export async function updateItem({ name, email, password, status, id }: UpdateItemType) {
+export async function updateItem({ name, email, password, status, id, associateUsers, phone }: UpdateItemType) {
   const upItem: UpdateItemType = {
+    id,
     name,
     email,
     status,
+    associateUsers,
+    phone
   };
+
+  // 不能更新 account的值
+
   if (password) {
     const hashedPassword = await argon2.hash(password, {
       salt: Buffer.from(process.env.ARGON_2_SALT as string),

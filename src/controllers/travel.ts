@@ -1,6 +1,7 @@
 import type { GetItemByIdType } from '../schema/travel';
 import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '../schema/travel';
-import type { SelectItemsType } from '../schema/user';
+import type { SelectItemsType } from '../schema/travel';
+import { ItemType } from '../schema/user';
 import {
   addItem,
   deleteItem,
@@ -13,6 +14,13 @@ import { createHandler } from '../utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const data = req.body;
+
+  const user = res.locals.user as ItemType;
+  if (user && user.account) {
+    // @ts-ignore
+    data.user = user.account;
+  }
+
 
   const result = await addItem(data);
 
@@ -44,9 +52,17 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
 
 export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   // @ts-ignore
-  const pager = req.query as SelectItemsType;
+  const options = req.query as SelectItemsType;
 
-  const data = await getItems(pager as any);
+  const user = res.locals.user as ItemType;
+  // if(user && user.account){
+  //   options.user = user.account;
+  // }
+  const accounts = [user.account, ...(user.associateUsers as string[] || [])];
+
+
+
+  const data = await getItems(options as any, accounts);
 
   res.status(200).json({
     code: 0,

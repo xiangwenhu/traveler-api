@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { boolean, int, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
+import { boolean, int, mysqlTable, timestamp, tinyint, varchar, json } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { pagerSchema } from './common';
@@ -14,6 +14,8 @@ export const users = mysqlTable('users', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
   isAdmin: boolean('is_admin').notNull().default(false),
+  associateUsers: json("associate_users").$defaultFn(() => null),
+  phone: varchar('phone', { length: 20 })
 });
 
 const schema = createSelectSchema(users, {
@@ -51,13 +53,16 @@ export const updateSchema = z.object({
   body: schema
     .pick({
       id: true,
+    }).merge(schema.pick({
       name: true,
       email: true,
       password: true,
       status: true,
       isAdmin: true,
-    })
-    .partial(),
+      associateUsers: true,
+      account: true,
+      phone: true
+    }).partial())
 });
 
 export const newSchema = z.object({
@@ -68,7 +73,10 @@ export const newSchema = z.object({
     password: true,
     status: true,
     isAdmin: true,
-  }),
+  }).merge(schema.pick({
+    associateUsers: true,
+    phone: true,
+  }).partial())
 });
 
 export type ItemType = InferSelectModel<typeof users>;

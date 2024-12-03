@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq, sql } from 'drizzle-orm';
+import { aliasedTable, count, eq, sql, and, inArray } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import type { NewItemType, SelectItemsType, StatisticsItemsType, UpdateItemType } from '../schema/travel';
 import { travels } from '../schema/travel';
@@ -7,11 +7,13 @@ import { BackendError, EnumErrorCode } from '../utils/errors';
 import { buildWhereClause, customCount } from '../utils/sql';
 import { getItems as getRegionItems } from './region';
 
-export async function getItems(options: SelectItemsType) {
+export async function getItems(options: SelectItemsType, accounts: string[]) {
   const { pageNum, pageSize } = options;
   const offset = (+pageNum - 1) * +pageSize;
 
-  const whereCon = buildWhereClause(options, travels);
+  let whereCon = buildWhereClause(options, travels);
+
+  whereCon = and(whereCon, inArray(travels.user, accounts));
 
   const totalArr = await db.select({ count: count() }).from(travels).where(whereCon);
 
@@ -49,7 +51,7 @@ export async function getItems(options: SelectItemsType) {
     .leftJoin(regionsC, eq(regionsC.code, travels.city))
     .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
     .orderBy(sql`${travels.id} desc`)
-  
+
 
   return {
     list: items,

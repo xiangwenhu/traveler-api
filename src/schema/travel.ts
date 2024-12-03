@@ -1,7 +1,7 @@
 import { type InferSelectModel, relations } from 'drizzle-orm';
-import { boolean, double, int, mysqlTable, text, timestamp, varchar,json } from 'drizzle-orm/mysql-core';
+import { boolean, double, int, mysqlTable, text, timestamp, varchar, json } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { resources } from './resource';
 import { pagerSchema, zNumberString } from './common';
 import { travelTags } from './travelTags';
@@ -20,9 +20,10 @@ export const travels = mysqlTable('travels', {
   date: timestamp('date', { mode: 'string' }).notNull(),
   createdAt: timestamp('created_at').$defaultFn(() => new Date()),
   updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
-  tags: json("tags").$defaultFn(()=> []),
-  scenicSpots: json("scenic_spots").$defaultFn(()=> []),
-  schools: json("scenic_spots").$defaultFn(()=> [])
+  tags: json("tags").$defaultFn(() => []),
+  scenicSpots: json("scenic_spots").$defaultFn(() => []),
+  schools: json("schools").$defaultFn(() => []),
+  user: varchar("user", { length: 20 }),
 });
 
 export const schema = createSelectSchema(travels);
@@ -31,6 +32,7 @@ export const selectSchema = z.object({
     province: zNumberString,
     city: zNumberString,
     county: zNumberString,
+    user: z.string(),
   }).partial().merge(pagerSchema),
 });
 
@@ -82,7 +84,7 @@ export const newSchema = z.object({
     latitude: true,
     longitude: true,
     date: true,
-    scenicSpots: true
+    scenicSpots: true,
   }).merge(z.object({
     tags: z.array(z.number())
   })),
@@ -109,8 +111,8 @@ export type GetItemByIdType = z.infer<typeof getItemByIdSchema>['query'];
 
 
 export const tagsRelations = relations(travelTags, ({ one }) => ({
-	tags: one(travels, {
-		fields: [travelTags.travelId],
-		references: [travels.id],
-	}),
+  tags: one(travels, {
+    fields: [travelTags.travelId],
+    references: [travels.id],
+  }),
 }));
