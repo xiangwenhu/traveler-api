@@ -9,6 +9,7 @@ import travelRoutes from './travel';
 import tagsRoutes from "./tags"
 import AAAAARoutes from "./5AScenic"
 import schoolRoutes from './school';
+import iceRoutes from './ice';
 
 export default createRouter((router: Router) => {
   router.use('/admin', adminRoutes);
@@ -19,5 +20,6 @@ export default createRouter((router: Router) => {
   router.use('/travel', travelRoutes);
   router.use("/tags", tagsRoutes)
   router.use("/5A", AAAAARoutes);
-  router.use("/school", schoolRoutes)
+  router.use("/school", schoolRoutes),
+  router.use("/ice", iceRoutes)
 });

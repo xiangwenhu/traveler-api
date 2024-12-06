@@ -27,7 +27,9 @@ const configSchema = z.object({
   ALI_OSS_ACS_RAM: z.string(),
   ALI_OSS_BUCKET: z.string(),
   ALI_OSS_REGION: z.string(),
-  AMAP_KEY: z.string()
+  AMAP_KEY: z.string(),
+  ALI_ACE_END_POINT: z.string(),
+  ALI_OSS_T_BUCKET_ROOT: z.string()
 });
 
 try {
