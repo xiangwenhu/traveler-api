@@ -1,17 +1,17 @@
-import { CronJob } from "cron"
+import * as cron from "cron"
+import job from "./job";
 
 
 const logger = console;
 
 // https://crontab.guru/#0_9_*_*_0,3 不准确了，查看github
-const job = new CronJob(
+const cronJob = new cron.CronJob(
     '0 */5 * * * *',  // At 5 minutes
     function () {
         try {
             logger.log("ICE CronJob onTick:", new Date().toLocaleString());
-
-
-            logger.log("ICE CronJob nextDate:", job.nextDate().toLocaleString())
+            job();
+            logger.log("ICE CronJob nextDate:", cronJob.nextDate().toJSDate().toLocaleString())
         } catch (err) {
             logger.error("ICE CronJob onTick error:", err);
         }
@@ -20,7 +20,7 @@ const job = new CronJob(
     true,
     'Asia/Shanghai',
     {},
-    true
+    false
 );
-logger.log("ICE CronJob nextDate:", job.nextDate().toLocaleString())
-job.start();
+logger.log("ICE CronJob nextDate:", cronJob.nextDate().toJSDate().toLocaleString())
+cronJob.start();

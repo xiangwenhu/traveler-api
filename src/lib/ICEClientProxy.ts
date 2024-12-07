@@ -69,7 +69,7 @@ export class ICEClientProxy {
 
 
 export default new ICEClientProxy({
-    accessKeyId: CONFIG.accessKeyId,
-    accessKeySecret: CONFIG.accessKeySecret,
-    endpoint: CONFIG.endpoint
+    accessKeyId: process.env.ALI_ACC_ID,
+    accessKeySecret:  process.env.ALI_ACC_SECRET,
+    endpoint: process.env.ALI_ACE_END_POINT
 });

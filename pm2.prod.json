@@ -9,6 +9,16 @@
         "NODE_ENV": "prod",
         "LOG_PATH": "/data/www/logs/travel-api"
       }
+    },
+    {
+      "error_file": "/data/www/logs/job-ice/err.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS Z",
+      "name": "job-ice",
+      "script": "./build/src/__jobs__/ice/index.js",
+      "env": {
+        "NODE_ENV": "prod",
+        "LOG_PATH": "/data/www/logs/job-ice"
+      }
     }
   ]
 }
