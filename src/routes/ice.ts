@@ -1,7 +1,7 @@
 import type { Router } from 'express';
 import { authenticate } from '../middlewares/auth';
 import { createRouter } from '../utils/create';
-import { submitMediaProducingHandler } from '../controllers/ice';
+import { submitMediaProducingHandler, submitTravelMediaProducingHandler } from '../controllers/ice';
 
 export default createRouter((router: Router) => {
   router.use(
@@ -11,4 +11,6 @@ export default createRouter((router: Router) => {
   );
 
   router.post('/submitMediaProducing', submitMediaProducingHandler);
+  
+  router.post('/submitTravelMediaProducing', submitTravelMediaProducingHandler);
 });

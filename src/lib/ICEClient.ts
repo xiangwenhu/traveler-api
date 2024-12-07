@@ -30,7 +30,10 @@ export class ICEClient {
     submitMediaProducingJob(request: ICE.SubmitMediaProducingJobRequest){
         return this.iceClient.submitMediaProducingJob(request)
     }
-    
+
+    getMediaProducingJob(request: ICE.GetMediaProducingJobRequest){
+        return this.iceClient.getMediaProducingJob(request)
+    }    
 }
 
 

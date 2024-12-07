@@ -33,11 +33,15 @@ export async function submitMediaProducing(data: MediaProducingOptions) {
     const uid = randomUUID();
     output.MediaURL = `${process.env.ALI_OSS_T_BUCKET_ROOT}/works/${uid}___${output.FileName}`;
 
-    const submitRequest = new SubmitMediaProducingJobRequest();
-    submitRequest.timeline = JSON.stringify(timeline),
-        submitRequest.outputMediaConfig = JSON.stringify(output)
+    const req = new SubmitMediaProducingJobRequest();
+    req.timeline = JSON.stringify(timeline),
+        req.outputMediaConfig = JSON.stringify(output)
 
-    const res = await timelineBuilder.iceClient.submitMediaProducingJob(submitRequest)
+    if (data.userData) {
+        req.userData = JSON.stringify(data.userData);
+    }
+
+    const res = await timelineBuilder.iceClient.submitMediaProducingJob(req)
 
     console.log("res:", res);
 

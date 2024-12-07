@@ -685,6 +685,7 @@ export interface MediaProducingOptions {
         url: string;
         options: AudioTrackOptions
     },
-    output: OutputMediaConfig
+    output: OutputMediaConfig;
+    userData: Record<string, any>
 }
 
