@@ -1,7 +1,6 @@
+import '../../utils/env';
 import * as cron from "cron"
 import job from "./job";
-
-
 const logger = console;
 
 // https://crontab.guru/#0_9_*_*_0,3 不准确了，查看github
