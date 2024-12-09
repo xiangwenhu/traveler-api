@@ -12,7 +12,7 @@ const zNumberString1000 = z
 
 export const pagerSchema = z.object({
   pageNum: zNumberString.min(1),
-  pageSize: zNumberString100,
+  pageSize: zNumberString1000,
 });
 
 export const pagerSchema1000 = z.object({
