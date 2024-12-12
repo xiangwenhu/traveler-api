@@ -163,6 +163,10 @@ export function errorHandler(error: unknown, req: Request, res: Response<{
   message: string;
   details?: unknown;
 }>, _next: NextFunction) {
+
+
+ consola.log("errorHandler:", error)
+
   let statusCode = 200;
   let code: number | undefined;
   let message: string | undefined;

@@ -1,10 +1,9 @@
 import { type InferSelectModel, relations } from 'drizzle-orm';
-import { boolean, double, int, mysqlTable, text, timestamp, varchar, json } from 'drizzle-orm/mysql-core';
+import { boolean, double, int, mysqlTable, text, timestamp, varchar, json, smallint } from 'drizzle-orm/mysql-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { number, z } from 'zod';
 import { resources } from './resource';
 import { pagerSchema, zNumberString } from './common';
-import { travelTags } from './travelTags';
 
 export const travels = mysqlTable('travels', {
   id: int('id').primaryKey().autoincrement(),
@@ -25,6 +24,10 @@ export const travels = mysqlTable('travels', {
   schools: json("schools").$defaultFn(() => []),
   user: varchar("user", { length: 20 }),
   works: json('works').$defaultFn(() => []),
+  /** added at 2024-12-12 */
+  endDate: timestamp('endDate', { mode: 'string' }).notNull(),
+  cost: int('cost').notNull(),
+  status: smallint("status").notNull()
 });
 
 export const schema = createSelectSchema(travels);
@@ -66,9 +69,11 @@ export const updateSchema = z.object({
       date: true,
       scenicSpots: true,
       schools: true,
-      works: true
-    })
-    .merge(z.object({
+      works: true,
+      endDate: true,
+      cost: true,
+      status: true,
+    }).partial().merge(z.object({
       tags: z.array(z.number())
     }))
     .partial(),
@@ -87,7 +92,9 @@ export const newSchema = z.object({
     longitude: true,
     date: true,
     scenicSpots: true,
-    works: true,
+    endDate: true,
+    cost: true,
+    status: true,
   }).merge(z.object({
     tags: z.array(z.number())
   })),
@@ -113,9 +120,9 @@ export type StatisticsItemsType = z.infer<typeof statisticsSchama>['query'];
 export type GetItemByIdType = z.infer<typeof getItemByIdSchema>['query'];
 
 
-export const tagsRelations = relations(travelTags, ({ one }) => ({
-  tags: one(travels, {
-    fields: [travelTags.travelId],
-    references: [travels.id],
-  }),
-}));
+// export const tagsRelations = relations(travelTags, ({ one }) => ({
+//   tags: one(travels, {
+//     fields: [travelTags.travelId],
+//     references: [travels.id],
+//   }),
+// }));
