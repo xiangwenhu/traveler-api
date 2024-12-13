@@ -6,14 +6,28 @@ import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 import { buildWhereClause, customCount } from '../utils/sql';
 import { getItems as getRegionItems } from './region';
+import _ from 'lodash';
+import consola from 'consola';
 
 export async function getItems(options: SelectItemsType, accounts: string[]) {
   const { pageNum, pageSize } = options;
   const offset = (+pageNum - 1) * +pageSize;
 
-  let whereCon = buildWhereClause(options, travels);
 
+  const { status, ...opts } = options;
+
+  let whereCon = buildWhereClause(opts, travels);
+
+  // 用户
   whereCon = and(whereCon, inArray(travels.user, accounts));
+
+  // 状态
+  if (status != undefined) {
+    const sArr = status.split(",").map(v => + v);
+    whereCon = and(whereCon, inArray(travels.status, sArr))
+  }
+
+  consola.log("whereCon",whereCon);
 
   const totalArr = await db.select({ count: count() }).from(travels).where(whereCon);
 

@@ -36,7 +36,7 @@ export const selectSchema = z.object({
     province: zNumberString,
     city: zNumberString,
     county: zNumberString,
-    user: z.string(),
+    status: z.string(),    
   }).partial().merge(pagerSchema),
 });
 
