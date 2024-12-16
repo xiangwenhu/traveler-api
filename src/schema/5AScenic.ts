@@ -29,7 +29,9 @@ export const AAAAAScenics = mysqlTable('5AScenics', {
     // 官网
     website: json().$defaultFn(() => []),
     // 免费
-    isfree: boolean("isfress").$defaultFn(()=> false)
+    isfree: boolean("isfress").$defaultFn(()=> false),
+    // 二维码
+    QRCodes: json(),
 });
 
 export const schema = createSelectSchema(AAAAAScenics);
@@ -78,7 +80,8 @@ export const newSchema = z.object({
         photos: true,
         tags: true,
         website: true,
-        isfree: true
+        isfree: true,
+        QRCodes: true
     })
 });
 

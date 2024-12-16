@@ -39,7 +39,8 @@ export async function getItems(options: SelectItemsType) {
       photos: AAAAAScenics.photos,
       website: AAAAAScenics.website,
       isfree: AAAAAScenics.isfree,
-      sourceId: AAAAAScenics.sourceId
+      sourceId: AAAAAScenics.sourceId,
+      QRCodes: AAAAAScenics.QRCodes
     })
     .from(AAAAAScenics)
     .where(whereCon)
@@ -68,7 +69,7 @@ export async function updateItem(item: UpdateItemType) {
     .where(eq(AAAAAScenics.id, item.id!));
   if (!updatedUser) {
     throw new BackendError(EnumErrorCode.NOT_FOUND, {
-      message: 'Travel could not be updated',
+      message: '5A could not be updated',
     });
   }
 
@@ -82,7 +83,7 @@ export async function addItem(item: NewItemType) {
 
   if (!newItem) {
     throw new BackendError(EnumErrorCode.INTERNAL_ERROR, {
-      message: 'Failed to add travel',
+      message: 'Failed to add 5A',
     });
   }
   return newItem;
