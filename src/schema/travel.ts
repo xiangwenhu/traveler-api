@@ -27,7 +27,9 @@ export const travels = mysqlTable('travels', {
   /** added at 2024-12-12 */
   endDate: timestamp('endDate', { mode: 'string' }).notNull(),
   cost: int('cost').notNull(),
-  status: smallint("status").notNull()
+  status: smallint("status").notNull().default(0),
+  // 主要交通工具，用于自动演示用
+  transport: smallint("transport"),
 });
 
 export const schema = createSelectSchema(travels);
@@ -73,6 +75,7 @@ export const updateSchema = z.object({
       endDate: true,
       cost: true,
       status: true,
+      transport: true
     }).partial().merge(z.object({
       tags: z.array(z.number())
     }))
@@ -95,6 +98,7 @@ export const newSchema = z.object({
     endDate: true,
     cost: true,
     status: true,
+    transport: true
   }).merge(z.object({
     tags: z.array(z.number())
   })),

@@ -58,7 +58,8 @@ export async function getItems(options: SelectItemsType, accounts: string[]) {
       schools: travels.schools,
       cost: travels.cost,
       endDate: travels.endDate,
-      status: travels.status
+      status: travels.status,
+      transport: travels.transport
     })
     .from(travels)
     .where(whereCon)
