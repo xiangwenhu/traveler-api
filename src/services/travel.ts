@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq, sql, and, inArray } from 'drizzle-orm';
+import { aliasedTable, count, eq, sql, and, inArray, between } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import type { NewItemType, SelectItemsType, StatisticsItemsType, UpdateItemType } from '../schema/travel';
 import { travels } from '../schema/travel';
@@ -14,9 +14,13 @@ export async function getItems(options: SelectItemsType, accounts: string[]) {
   const offset = (+pageNum - 1) * +pageSize;
 
 
-  const { status, ...opts } = options;
+  const { status,  date, endDate, ...opts } = options;
 
   let whereCon = buildWhereClause(opts, travels);
+
+  if(date && endDate){
+    whereCon = and(whereCon, between(travels.date, date, endDate));
+  }
 
   // 用户
   whereCon = and(whereCon, inArray(travels.user, accounts));

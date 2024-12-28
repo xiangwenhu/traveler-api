@@ -4,6 +4,7 @@ import { createSelectSchema } from 'drizzle-zod';
 import { number, z } from 'zod';
 import { resources } from './resource';
 import { pagerSchema, zNumberString } from './common';
+import { title } from 'node:process';
 
 export const travels = mysqlTable('travels', {
   id: int('id').primaryKey().autoincrement(),
@@ -35,10 +36,13 @@ export const travels = mysqlTable('travels', {
 export const schema = createSelectSchema(travels);
 export const selectSchema = z.object({
   query: z.object({
+    title: z.string(),
     province: zNumberString,
     city: zNumberString,
     county: zNumberString,
-    status: z.string(),    
+    date: z.string(),
+    endDate: z.string(),
+    status: z.string(),
   }).partial().merge(pagerSchema),
 });
 
