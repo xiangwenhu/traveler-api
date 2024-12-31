@@ -63,7 +63,8 @@ async function addItemO(item: AAAAAContent) {
         updatedAt: new Date(),
         sourceId: item.id,
         isfree: false,
-        website: []
+        website: [],
+        QRCodes: null
     }
 
     await addItem(data);
