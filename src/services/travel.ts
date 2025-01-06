@@ -63,7 +63,8 @@ export async function getItems(options: SelectItemsType, accounts: string[]) {
       cost: travels.cost,
       endDate: travels.endDate,
       status: travels.status,
-      transport: travels.transport
+      transport: travels.transport,
+      iceProjectId: travels.iceProjectId,
     })
     .from(travels)
     .where(whereCon)
@@ -128,8 +129,8 @@ async function getStatisticsColInfo(options: StatisticsItemsType) {
   }
 
   // 比如台湾省， 只到省
-  const cityChilren = await getRegionItems(+options.province);
-  if (cityChilren.length == 0) {
+  const cityChildren = await getRegionItems(+options.province);
+  if (cityChildren.length == 0) {
     return {
       count: travels.province,
       groupBy: travels.province,
@@ -146,8 +147,8 @@ async function getStatisticsColInfo(options: StatisticsItemsType) {
   }
 
   // 比如北京，天津，直到 二级， 北京/东城
-  const countyChilren = await getRegionItems(+options.city);
-  if (countyChilren.length == 0) {
+  const countyChildren = await getRegionItems(+options.city);
+  if (countyChildren.length == 0) {
     return {
       count: travels.city,
       groupBy: travels.city,

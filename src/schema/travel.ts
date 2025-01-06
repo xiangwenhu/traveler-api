@@ -31,6 +31,8 @@ export const travels = mysqlTable('travels', {
   status: smallint("status").notNull().default(0),
   // 主要交通工具，用于自动演示用
   transport: smallint("transport"),
+  // ice 云剪辑项目id
+  iceProjectId: varchar('ice_project_id', { length: 100 })
 });
 
 export const schema = createSelectSchema(travels);
@@ -79,7 +81,8 @@ export const updateSchema = z.object({
       endDate: true,
       cost: true,
       status: true,
-      transport: true
+      transport: true,
+      iceProjectId: true
     }).partial().merge(z.object({
       tags: z.array(z.number())
     }))
