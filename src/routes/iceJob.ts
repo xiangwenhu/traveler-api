@@ -4,7 +4,7 @@ import {
   deleteHandler,
   getItemsHandler,
   updateHandler,
-} from '../controllers/tags';
+} from '../controllers/iceJob';
 import { authenticate } from '../middlewares/auth';
 import { createRouter } from '../utils/create';
 
