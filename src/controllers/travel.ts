@@ -13,6 +13,7 @@ import {
 } from '../services/travel';
 import getOSSClient from '../utils/aliOSSClient';
 import { createHandler } from '../utils/create';
+import { addItem as addResourceItem } from '../services/resource';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const data = req.body;
@@ -34,6 +35,16 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
   //   await addItems(ttags);
   // }
 
+  addResourceItem({
+    travelId: result.insertId,
+    url: data.cover!,
+    title: data.title,
+    type: "image",
+    duration: 0,
+    size: 0,
+    width: 0,
+    height: 0,
+  })
 
   res.status(200).json({
     code: 0,
@@ -66,14 +77,7 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
     }
   }
 
-  // 删除封面
-  const url = travel?.cover!.split("com/")[1];
-  await ossClient.delete(url!);
-
-
   // TODO:: 删除合成的视频
-
-
   // const videos = travel.works;
 
 
