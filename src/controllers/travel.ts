@@ -2,6 +2,7 @@ import type { GetItemByIdType } from '../schema/travel';
 import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '../schema/travel';
 import type { SelectItemsType } from '../schema/travel';
 import { ItemType } from '../schema/user';
+import { getByTravelId } from '../services/resource';
 import {
   addItem,
   deleteItem,
@@ -10,15 +11,16 @@ import {
   statisticsItems,
   updateItem,
 } from '../services/travel';
+import getOSSClient from '../utils/aliOSSClient';
 import { createHandler } from '../utils/create';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const data = req.body;
 
-  const user = res.locals.user as ItemType;
-  if (user && user.account) {
+  const item = res.locals.user as ItemType;
+  if (item && item.account) {
     // @ts-ignore
-    data.user = user.account;
+    data.user = item.account;
   }
 
 
@@ -42,10 +44,44 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
 export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const { id } = req.body;
 
-  const deletedUser = await deleteItem(id);
+  const travel = await getItemById(id);
+
+  if (!travel) throw new Error("旅行不存在");
+
+  const ossClient = await getOSSClient();
+
+  // 获取资源
+  const resourcesItems = await getByTravelId({
+    travelId: +id,
+    pageNum: '1',
+    pageSize: '2000'
+  });
+
+  // 资源大于0，删除资源
+  if (resourcesItems.total > 0) {
+    for (let i = 0; i < resourcesItems.list.length; i++) {
+      const r = resourcesItems.list[i];
+      const url = r!.url.split("com/")[1];
+      await ossClient.delete(url!);
+    }
+  }
+
+  // 删除封面
+  const url = travel?.cover!.split("com/")[1];
+  await ossClient.delete(url!);
+
+
+  // TODO:: 删除合成的视频
+
+
+  // const videos = travel.works;
+
+
+  // 删除旅行
+  const deletedItem = await deleteItem(id);
 
   res.status(200).json({
-    data: deletedUser,
+    data: deletedItem,
     code: 0,
   });
 });
@@ -84,7 +120,7 @@ export const getItemByIdHandler = createHandler(getItemByIdSchema, async (req, r
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const data = req.body;
 
-  const updatedUser = await updateItem(data);
+  const updatedItem = await updateItem(data);
   // await deleteByTravelId(data.id!)
 
   // if (Array.isArray(data.tags) && data.tags.length > 0) {
@@ -96,7 +132,7 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
   // }
 
   res.status(200).json({
-    data: updatedUser,
+    data: updatedItem,
     code: 0,
   });
 });

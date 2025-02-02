@@ -24,10 +24,10 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
 export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   const { id } = req.body;
 
-  const deletedUser = await deleteItem(id);
+  const deletedItem = await deleteItem(id);
 
   res.status(200).json({
-    data: deletedUser,
+    data: deletedItem,
     code: 0,
   });
 });
@@ -58,10 +58,10 @@ export const getItemByIdHandler = createHandler(getItemByIdSchema, async (req, r
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const data = req.body;
 
-  const updatedUser = await updateItem(data);
+  const updatedItem = await updateItem(data);
 
   res.status(200).json({
-    data: updatedUser,
+    data: updatedItem,
     code: 0,
   });
 });

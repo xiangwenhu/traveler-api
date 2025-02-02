@@ -6,7 +6,7 @@ import { db } from '../utils/db';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 import { buildWhereClause } from '../utils/sql';
 
-export async function getByTraverlId(options: {
+export async function getByTravelId(options: {
   travelId: number | string;
 } & PagerParamsType) {
   const { travelId, pageNum, pageSize } = options;

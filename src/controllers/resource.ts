@@ -3,7 +3,7 @@ import { deleteSchema, newSchema, schema, selectSchema, updateSchema } from '../
 import {
   addItem,
   deleteItem,
-  getByTraverlId,
+  getByTravelId,
   getItems,
   updateItem,
 } from '../services/resource';
@@ -31,7 +31,7 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
 export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   const selectOptions = req.query as SelectItemsType;
 
-  const data = await getByTraverlId(selectOptions);
+  const data = await getByTravelId(selectOptions);
 
   res.status(200).json({
     code: 0,
