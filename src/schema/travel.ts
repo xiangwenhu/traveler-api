@@ -111,11 +111,11 @@ export const newSchema = z.object({
   })),
 });
 
-export const tralvelRelations = relations(travels, ({ one, many }) => ({
+export const travelRelations = relations(travels, ({ one, many }) => ({
   resources: many(resources),
 }));
 
-export const statisticsSchama = z.object({
+export const statisticsSchema = z.object({
   query: z.object({
     province: zNumberString,
     city: zNumberString,
@@ -127,7 +127,7 @@ export type ItemType = InferSelectModel<typeof travels>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
-export type StatisticsItemsType = z.infer<typeof statisticsSchama>['query'];
+export type StatisticsItemsType = z.infer<typeof statisticsSchema>['query'];
 export type GetItemByIdType = z.infer<typeof getItemByIdSchema>['query'];
 
 

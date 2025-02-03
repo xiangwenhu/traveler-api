@@ -1,5 +1,5 @@
 import type { GetItemByIdType } from '../schema/travel';
-import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchama, updateSchema } from '../schema/travel';
+import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchema, updateSchema } from '../schema/travel';
 import type { SelectItemsType } from '../schema/travel';
 import { ItemType } from '../schema/user';
 import { getByTravelId } from '../services/resource';
@@ -24,16 +24,7 @@ export const addItemHandler = createHandler(newSchema, async (req, res) => {
     data.user = item.account;
   }
 
-
   const result = await addItem(data);
-
-  // if (Array.isArray(data.tags) && data.tags.length > 0) {
-  //   const ttags = data.tags.map(t => ({
-  //     tagId: t,
-  //     travelId: result.insertId,
-  //   }))
-  //   await addItems(ttags);
-  // }
 
   addResourceItem({
     travelId: result.insertId,
@@ -80,7 +71,6 @@ export const deleteHandler = createHandler(deleteSchema, async (req, res) => {
   // TODO:: 删除合成的视频
   // const videos = travel.works;
 
-
   // 删除旅行
   const deletedItem = await deleteItem(id);
 
@@ -99,8 +89,6 @@ export const getItemsHandler = createHandler(selectSchema, async (req, res) => {
   //   options.user = user.account;
   // }
   const accounts = [user.account, ...(user.associateUsers as string[] || [])];
-
-
 
   const data = await getItems(options as any, accounts);
 
@@ -124,16 +112,27 @@ export const getItemByIdHandler = createHandler(getItemByIdSchema, async (req, r
 export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const data = req.body;
 
-  const updatedItem = await updateItem(data);
-  // await deleteByTravelId(data.id!)
+  const { id } = data;
 
-  // if (Array.isArray(data.tags) && data.tags.length > 0) {
-  //   const ttags = data.tags.map(t => ({
-  //     tagId: t,
-  //     travelId: data.id!,
-  //   }))
-  //   await addItems(ttags);
-  // }
+  if (!id) throw new Error(`缺少必要参数id`);
+
+  const travel = await getItemById(data.id!);
+  if (!travel) throw new Error("旅行不存在");
+
+  if (data.cover !== travel.cover) {
+    addResourceItem({
+      travelId: id,
+      url: data.cover!,
+      title: data.title || travel.title,
+      type: "image",
+      duration: 0,
+      size: 0,
+      width: 0,
+      height: 0,
+    });
+  }
+
+  const updatedItem = await updateItem(data);
 
   res.status(200).json({
     data: updatedItem,
@@ -141,7 +140,7 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
   });
 });
 
-export const statisticsHandler = createHandler(statisticsSchama, async (req, res) => {
+export const statisticsHandler = createHandler(statisticsSchema, async (req, res) => {
   const options = req.query;
 
   const updatedItem = await statisticsItems(options);
