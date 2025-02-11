@@ -8,7 +8,7 @@ export const resources = mysqlTable('resources', {
     id: int('id').primaryKey().autoincrement(),
     travelId: int("travelId").notNull(),
     type: mysqlEnum('type', ["image", "audio", "video", 'text']).notNull(),
-    url: varchar('url', { length: 255 }).notNull(),
+    url: varchar('url', { length: 1024 }).notNull(),
     title: varchar('title', { length: 255 }).notNull(),
     duration: int('duration'),
     size: int('size').notNull(),
