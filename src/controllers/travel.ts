@@ -119,7 +119,7 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
   const travel = await getItemById(data.id!);
   if (!travel) throw new Error("旅行不存在");
 
-  if (data.cover !== travel.cover) {
+  if (data.cover && data.cover !== travel.cover) {
     addResourceItem({
       travelId: id,
       url: data.cover!,
