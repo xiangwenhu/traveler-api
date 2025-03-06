@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq, sql, and, inArray, between } from 'drizzle-orm';
+import { aliasedTable, count, eq, sql, and, inArray, between, like } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import type { NewItemType, SelectItemsType, StatisticsItemsType, UpdateItemType } from '../schema/travel';
 import { travels } from '../schema/travel';
@@ -8,18 +8,25 @@ import { buildWhereClause, customCount } from '../utils/sql';
 import { getItems as getRegionItems } from './region';
 import _ from 'lodash';
 import consola from 'consola';
+import { timestamp } from 'drizzle-orm/mysql-core';
 
 export async function getItems(options: SelectItemsType, accounts: string[]) {
   const { pageNum, pageSize } = options;
   const offset = (+pageNum - 1) * +pageSize;
 
 
-  const { status,  date, endDate, ...opts } = options;
+  const { status,  date, endDate, title, ...opts } = options;
 
-  let whereCon = buildWhereClause(opts, travels);
+  let whereCon = buildWhereClause(opts, travels, [travels.title.name]);
+
+  const strTitle = options.title ?  `${options.title}`.trim(): undefined;
+
+  if(strTitle){
+    whereCon = and(whereCon, like(travels.title, `%${strTitle}%`));
+  }
 
   if(date && endDate){
-    whereCon = and(whereCon, between(travels.date, date, endDate));
+    whereCon = and(whereCon, between(travels.date, new Date(date).toISOString(), new Date(endDate).toISOString()));
   }
 
   // 用户

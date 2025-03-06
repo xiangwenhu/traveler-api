@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq } from 'drizzle-orm';
+import { aliasedTable, and, count, eq, like } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import { schools, type NewItemType, type SelectItemsType, type StatisticsItemsType, type UpdateItemType } from  "../schema/school"
 import { db } from '../utils/db';
@@ -10,8 +10,11 @@ export async function getItems(options: SelectItemsType) {
   const { pageNum, pageSize } = options;
   const offset = (+pageNum - 1) * +pageSize;
 
-  const whereCon = buildWhereClause(options, schools);
-
+  let whereCon = buildWhereClause(options, schools, [schools.name.name]);
+  const name = options.name ?  `${options.name}`.trim(): undefined;
+  if(name){
+    whereCon = and(whereCon, like(schools.name, `%${name}%`))
+  }
   const totalArr = await db.select({ count: count() }).from(schools).where(whereCon);
 
   const regionsC = aliasedTable(regions, 'regionsC');

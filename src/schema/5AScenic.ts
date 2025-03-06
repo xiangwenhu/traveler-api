@@ -38,8 +38,8 @@ export const schema = createSelectSchema(AAAAAScenics);
 export const selectSchema = z.object({
     query: z.object({
         province: zNumberString,
-        // city: zNumberString,
-        // county: zNumberString,
+        city: zNumberString,
+        county: zNumberString,
         name: z.string()
     }).partial().merge(pagerSchema1000),
 });

@@ -1,4 +1,4 @@
-import { aliasedTable, count, eq } from 'drizzle-orm';
+import { aliasedTable, and, count, eq, like } from 'drizzle-orm';
 import { regions } from '../schema/region';
 import { AAAAAScenics, type NewItemType, type SelectItemsType, type StatisticsItemsType, type UpdateItemType } from  "../schema/5AScenic"
 import { db } from '../utils/db';
@@ -10,7 +10,12 @@ export async function getItems(options: SelectItemsType) {
   const { pageNum, pageSize } = options;
   const offset = (+pageNum - 1) * +pageSize;
 
-  const whereCon = buildWhereClause(options, AAAAAScenics);
+  let whereCon = buildWhereClause(options, AAAAAScenics, [AAAAAScenics.name.name]);
+
+  const name = options.name ?  `${options.name}`.trim(): undefined;
+  if(name){
+    whereCon = and(whereCon, like(AAAAAScenics.name, `%${name}%`))
+  }
 
   const totalArr = await db.select({ count: count() }).from(AAAAAScenics).where(whereCon);
 
