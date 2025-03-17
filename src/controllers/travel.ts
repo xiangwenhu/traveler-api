@@ -1,5 +1,5 @@
 import type { GetItemByIdType } from '../schema/travel';
-import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, statisticsSchema, updateSchema } from '../schema/travel';
+import { deleteSchema, getItemByIdSchema, newSchema, selectSchema, setCoverSchema, statisticsSchema, updateSchema } from '../schema/travel';
 import type { SelectItemsType } from '../schema/travel';
 import { ItemType } from '../schema/user';
 import { getByTravelId } from '../services/resource';
@@ -13,7 +13,7 @@ import {
 } from '../services/travel';
 import getOSSClient from '../utils/aliOSSClient';
 import { createHandler } from '../utils/create';
-import { addItem as addResourceItem } from '../services/resource';
+import { addItem as addResourceItem, deleteItem as deleteResourceItem } from '../services/resource';
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
   const data = req.body;
@@ -144,6 +144,31 @@ export const statisticsHandler = createHandler(statisticsSchema, async (req, res
   const options = req.query;
 
   const updatedItem = await statisticsItems(options);
+
+  res.status(200).json({
+    data: updatedItem,
+    code: 0,
+  });
+});
+
+
+export const setCoverHandler = createHandler(setCoverSchema, async (req, res) => {
+  const data = req.body;
+
+  const { id } = data;
+
+  if (!id) throw new Error(`缺少必要参数id`);
+
+  const travel = await getItemById(data.id!);
+  if (!travel) throw new Error("旅行不存在");
+
+  const updateData = {
+      id,
+      cover: data.cover
+  }
+
+
+  const updatedItem = await updateItem(updateData);
 
   res.status(200).json({
     data: updatedItem,

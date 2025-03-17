@@ -123,9 +123,18 @@ export const statisticsSchema = z.object({
   }).partial(),
 });
 
+export const setCoverSchema = z.object({
+  body: schema
+    .pick({
+      id: true,
+      cover: true,
+    })
+});
+
 export type ItemType = InferSelectModel<typeof travels>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
+export type SetCoverType = z.infer<typeof setCoverSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
 export type StatisticsItemsType = z.infer<typeof statisticsSchema>['query'];
 export type GetItemByIdType = z.infer<typeof getItemByIdSchema>['query'];

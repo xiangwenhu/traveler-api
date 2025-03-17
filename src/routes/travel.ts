@@ -4,6 +4,7 @@ import {
   deleteHandler,
   getItemByIdHandler,
   getItemsHandler,
+  setCoverHandler,
   statisticsHandler,
   updateHandler,
 } from '../controllers/travel';
@@ -23,4 +24,5 @@ export default createRouter((router: Router) => {
   router.put('/update', updateHandler);
   router.get('/statistics', statisticsHandler);
   router.get('/getItemById', getItemByIdHandler);
+  router.post('/setCover', setCoverHandler);
 });
