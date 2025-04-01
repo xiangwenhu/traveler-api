@@ -12,6 +12,12 @@ npx drizzle-kit up
 npx drizzle-kit studio
 ```
 
+
+## 同步 schema
+```cmd
+npx drizzle-kit push
+```
+
 ## TODO
 1. 旅行标签
 2. 用户旅行自己可见，分享其他人

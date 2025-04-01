@@ -15,7 +15,8 @@ export const users = mysqlTable('users', {
   updatedAt: timestamp('updated_at').$onUpdateFn(() => new Date()),
   isAdmin: boolean('is_admin').notNull().default(false),
   associateUsers: json("associate_users").$defaultFn(() => null),
-  phone: varchar('phone', { length: 20 })
+  phone: varchar('phone', { length: 20 }),
+  readonly: boolean('is_readonly').default(false),
 });
 
 const schema = createSelectSchema(users, {
@@ -61,7 +62,8 @@ export const updateSchema = z.object({
       isAdmin: true,
       associateUsers: true,
       account: true,
-      phone: true
+      phone: true,
+      readonly: true
     }).partial())
 });
 
@@ -73,6 +75,7 @@ export const newSchema = z.object({
     password: true,
     status: true,
     isAdmin: true,
+    readonly: true
   }).merge(schema.pick({
     associateUsers: true,
     phone: true,

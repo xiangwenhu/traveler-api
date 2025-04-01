@@ -158,14 +158,14 @@ export class BackendError extends Error {
   }
 }
 
-export function errorHandler(error: unknown, req: Request, res: Response<{
+export function errorHandler(error: any, req: Request, res: Response<{
   code: number;
   message: string;
   details?: unknown;
 }>, _next: NextFunction) {
 
 
- consola.log("errorHandler:", error)
+  consola.log("errorHandler:", error)
 
   let statusCode = 200;
   let code: number | undefined;
@@ -196,17 +196,15 @@ export function errorHandler(error: unknown, req: Request, res: Response<{
     details = error;
   }
 
-  if (code == undefined) {
-    code = 9999;
-  }
-  message = message ?? getMessageFromErrorCode(code);
+
+  message = code ? getMessageFromErrorCode(code) : error?.message || "未知错误";
   details = details ?? error;
 
   consola.error(`${ip} [${method}] ${url} ${code} - ${message}`);
 
   res.status(statusCode).json({
-    code,
-    message,
+    code: code || 9999,
+    message: message!,
     details,
   });
 }

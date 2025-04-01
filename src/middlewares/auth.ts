@@ -1,7 +1,38 @@
+import { ItemType as User } from '../schema/user';
 import { getItemByAccount, getItemById } from '../services/user';
 import { createHandler } from '../utils/create';
 import { BackendError, EnumErrorCode } from '../utils/errors';
 import { verifyToken } from '../utils/jwt';
+import { type Request } from 'express';
+
+const WhitelistAPIS: string[] = [
+  "/login"
+];
+
+const methodList = ["GET", "OPTIONS", 'HEAD'];
+
+
+function checkReadonlyUser(user: User, req: Request) {
+  // 不是只读用户，直接返回
+  if (!user.readonly) {
+    return true;
+  }
+
+  const path = req.path;
+  if (WhitelistAPIS.includes(path)) {
+    return true;
+  }
+
+  // 
+  const method = req.method.toUpperCase();
+  if (methodList.includes(method)) {
+    return true;
+  }
+
+  throw new Error('只读用户，无限操作');
+}
+
+
 
 export function authenticate({ verifyAdmin } = {
   verifyAdmin: false,
@@ -35,6 +66,8 @@ export function authenticate({ verifyAdmin } = {
         message: 'User not authorized',
       });
     }
+
+    checkReadonlyUser(user, req);
 
     res.locals.user = user;
     next();

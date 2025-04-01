@@ -5,11 +5,11 @@ import { submitMediaProducingHandler, submitTravelMediaProducingHandler } from '
 import iceClientProxy from '../lib/ICEClientProxy';
 
 export default createRouter((router: Router) => {
-  // router.use(
-  //   authenticate({
-  //     verifyAdmin: false,
-  //   }),
-  // );
+  router.use(
+    authenticate({
+      verifyAdmin: false,
+    }),
+  );
 
   router.post('/submitMediaProducing', submitMediaProducingHandler);
 
