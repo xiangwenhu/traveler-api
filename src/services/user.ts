@@ -78,14 +78,15 @@ export async function deleteItem(id: number) {
   return deletedUser;
 }
 
-export async function updateItem({ name, email, password, status, id, associateUsers, phone }: UpdateItemType) {
+export async function updateItem({ name, email, password, status, id, associateUsers, phone, readonly }: UpdateItemType) {
   const upItem: UpdateItemType = {
     id,
     name,
     email,
     status,
     associateUsers,
-    phone
+    phone,
+    readonly
   };
 
   // 不能更新 account的值

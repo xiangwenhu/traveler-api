@@ -18,7 +18,8 @@ export async function getItems() {
       isAdmin: users.isAdmin,
       id: users.id,
       associateUsers: users.associateUsers,
-      phone: users.account
+      phone: users.phone,
+      readonly: users.readonly
     })
     .from(users);
 

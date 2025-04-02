@@ -6,6 +6,7 @@ type HttpErrorCode =
   | 'BAD_REQUEST'
   | 'UNAUTHORIZED'
   | 'NOT_FOUND'
+  | 'FORBIDDEN'
   | 'METHOD_NOT_ALLOWED'
   | 'NOT_ACCEPTABLE'
   | 'REQUEST_TIMEOUT'
@@ -30,6 +31,7 @@ export enum EnumErrorCode {
   BAD_REQUEST = 40000,
   UNAUTHORIZED = 40001,
   INVALID_PASSWORD = 40001,
+  FORBIDDEN = 40003,
   NOT_FOUND = 40004,
   USER_NOT_FOUND = 40004,
   METHOD_NOT_ALLOWED = 40005,
@@ -60,6 +62,8 @@ export function getStatusFromErrorCode(code: ErrorCode): number {
     case 'UNAUTHORIZED':
     case 'INVALID_PASSWORD':
       return 40001;
+    case 'FORBIDDEN':
+      return 40003;
     case 'NOT_FOUND':
     case 'USER_NOT_FOUND':
       return 40004;
@@ -181,24 +185,22 @@ export function errorHandler(error: any, req: Request, res: Response<{
     code = error.code;
     details = error.details;
     statusCode = 200; // getStatusFromErrorCode(code);
-  }
-
-  if (error instanceof ZodError) {
+  } else if (error instanceof ZodError) {
     code = 5000;
     message = getMessageFromErrorCode(code);
     details = handleValidationError(error);
     statusCode = 200;
+  } else {
+
+    if ((error as { code: string }).code === 'ECONNREFUSED') {
+      code = 9000;
+      message = 'The DB crashed maybe because they dont like you :p';
+      details = error;
+    }
+
+    message = code ? getMessageFromErrorCode(code) : error?.message || "未知错误";
+    details = details ?? error;
   }
-
-  if ((error as { code: string }).code === 'ECONNREFUSED') {
-    code = 9000;
-    message = 'The DB crashed maybe because they dont like you :p';
-    details = error;
-  }
-
-
-  message = code ? getMessageFromErrorCode(code) : error?.message || "未知错误";
-  details = details ?? error;
 
   consola.error(`${ip} [${method}] ${url} ${code} - ${message}`);
 

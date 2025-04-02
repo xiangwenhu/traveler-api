@@ -62,8 +62,8 @@ export function authenticate({ verifyAdmin } = {
       throw new BackendError(EnumErrorCode.NOT_FOUND);
 
     if (verifyAdmin && !user.isAdmin) {
-      throw new BackendError(EnumErrorCode.UNAUTHORIZED, {
-        message: 'User not authorized',
+      throw new BackendError(EnumErrorCode.FORBIDDEN, {
+        message: '未授权访问',
       });
     }
 
