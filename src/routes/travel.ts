@@ -24,5 +24,5 @@ export default createRouter((router: Router) => {
   router.put('/update', updateHandler);
   router.get('/statistics', statisticsHandler);
   router.get('/getItemById', getItemByIdHandler);
-  router.post('/setCover', setCoverHandler);
+  router.put('/setCover', setCoverHandler);
 });

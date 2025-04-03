@@ -40,7 +40,7 @@ export const loginHandler = createHandler(loginSchema, async (req, res) => {
     throw new BackendError(EnumErrorCode.INVALID_PASSWORD);
 
   const token = generateToken(user.account);
-  res.status(200).json({ code: 0, data: { token, account: user.account, name: user.name } });
+  res.status(200).json({ code: 0, data: { isAdmin: user.isAdmin, readonly: user.readonly, token, account: user.account, name: user.name } });
 });
 
 export const addItemHandler = createHandler(newSchema, async (req, res) => {
