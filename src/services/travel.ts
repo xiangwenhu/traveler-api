@@ -80,7 +80,7 @@ export async function getItems(options: SelectItemsType, accounts: string[]) {
     .leftJoin(regions, eq(regions.code, travels.province))
     .leftJoin(regionsC, eq(regionsC.code, travels.city))
     .leftJoin(regionsCY, eq(regionsCY.code, travels.county))
-    .orderBy(sql`${travels.id} desc`)
+    .orderBy(sql`${travels.date} desc`)
 
 
   return {
