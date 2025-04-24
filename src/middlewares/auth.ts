@@ -6,20 +6,24 @@ import { verifyToken } from '../utils/jwt';
 import { type Request } from 'express';
 
 const WhitelistAPIS: string[] = [
-  "/login"
+  "/api/login",
+  "/api/ice",
+  '/api/travel/update'
 ];
 
 const methodList = ["GET", "OPTIONS", 'HEAD'];
 
 
-function checkReadonlyUser(user: User, req: Request) {
+function checkPermission(user: User, req: Request) {
   // 不是只读用户，直接返回
   if (!user.readonly) {
     return true;
   }
 
-  const path = req.path;
-  if (WhitelistAPIS.includes(path)) {
+  const originalUrl = req.originalUrl;
+
+  console.log('originalUrl:', originalUrl);
+  if (WhitelistAPIS.some(api => originalUrl.startsWith(api))) {
     return true;
   }
 
@@ -67,7 +71,7 @@ export function authenticate({ verifyAdmin } = {
       });
     }
 
-    checkReadonlyUser(user, req);
+    checkPermission(user, req);
 
     res.locals.user = user;
     next();
