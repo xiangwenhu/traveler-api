@@ -3,11 +3,14 @@ import process from 'node:process';
 import argon2 from 'argon2';
 import consola from 'consola';
 import type {
+  GetItemByAccountSchema,
   ItemType,
+  NewItemType,
   SelectItemsType,
 } from '../schema/user';
 import {
   deleteSchema,
+  getItemByAccountSchema,
   loginSchema,
   newSchema,
   updateSchema,
@@ -103,3 +106,31 @@ export const updateHandler = createHandler(updateSchema, async (req, res) => {
     data: updatedItem,
   });
 });
+
+export const getItemByAccountHandler = createHandler(getItemByAccountSchema, async (req, res) => {
+  const { account } = req.query as GetItemByAccountSchema;
+
+  const currentUser = res.locals.user as NewItemType;
+
+  if (account !== currentUser.account) {
+    res.status(200).json({
+      code: EnumErrorCode.FORBIDDEN,
+      message: "未授权访问",
+    });
+    return;
+  }
+  const item = await getItemByAccount(account);
+
+  if (!item) {
+    return res.status(200).json({
+      code: 0,
+      data: item
+    });
+  }
+
+  const { password, ...data } = item;
+  res.status(200).json({
+    code: 0,
+    data,
+  });
+})

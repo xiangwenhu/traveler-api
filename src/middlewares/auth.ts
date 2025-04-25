@@ -22,7 +22,7 @@ function checkPermission(user: User, req: Request) {
 
   const originalUrl = req.originalUrl;
 
-  console.log('originalUrl:', originalUrl);
+  console.log('checkPermission originalUrl:', originalUrl);
   if (WhitelistAPIS.some(api => originalUrl.startsWith(api))) {
     return true;
   }

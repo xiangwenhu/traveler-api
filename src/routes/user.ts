@@ -2,6 +2,7 @@ import type { Router } from 'express';
 import {
   addItemHandler,
   deleteHandler,
+  getItemByAccountHandler,
   loginHandler,
   updateHandler,
 } from '../controllers/user';
@@ -11,6 +12,7 @@ import { createRouter } from '../utils/create';
 export default createRouter((router: Router) => {
 
   router.post('/login', loginHandler);
+  router.get("/getItemByAccount", authenticate(), getItemByAccountHandler)
 
   router.use(
     authenticate({

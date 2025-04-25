@@ -82,7 +82,15 @@ export const newSchema = z.object({
   }).partial())
 });
 
+
+export const getItemByAccountSchema = z.object({
+  query: schema.pick({
+    account: true,
+  }),
+});
+
 export type ItemType = InferSelectModel<typeof users>;
 export type NewItemType = z.infer<typeof newSchema>['body'];
 export type UpdateItemType = z.infer<typeof updateSchema>['body'];
 export type SelectItemsType = z.infer<typeof selectSchema>['query'];
+export type GetItemByAccountSchema = z.infer<typeof getItemByAccountSchema>['query'];
